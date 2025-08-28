@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Create Audience - Step 2{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Create New Audience</h1>
+                <p class="text-gray-600 mt-1">Step 2: Generate phrases based on your keywords</p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 bg-green-600 rounded-full"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+                <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keywords Review -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Your Keywords</h2>
+        <div class="flex flex-wrap gap-2 mb-6">
+            {% for keyword in keywords %}
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+                {{ keyword }}
+            </span>
+            {% else %}
+            <p class="text-gray-500">No keywords found. Please go back to Step 1.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Phrase Generation -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <div class="mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-2">Generate Phrases</h2>
+            <p class="text-sm text-gray-600">Based on your keywords, I'll generate 10 phrases that people might use when talking about your topic online.</p>
+        </div>
+
+        <div class="mb-6">
+            <button id="generate-phrases" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200 flex items-center">
+                <span class="material-icons mr-2">auto_awesome</span>
+                Generate Phrases
+            </button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="hidden">
+            <div class="flex items-center space-x-3">
+                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                <p class="text-gray-600">Generating phrases based on your keywords...</p>
+            </div>
+        </div>
+
+        <!-- Generated Phrases -->
+        <div id="phrases-section" class="hidden">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Generated Phrases</h3>
+            <div id="phrases-list" class="space-y-3 mb-6">
+                <!-- Phrases will be populated here -->
+            </div>
+            
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                <div class="text-sm text-gray-600">
+                    <span id="phrases-count">0</span> phrases generated
+                </div>
+                <a href="{{ url_for('create_audience_step3') }}" 
+                   class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
+                    Continue to Step 3
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="flex justify-between">
+        <a href="{{ url_for('create_audience_step1') }}" 
+           class="text-gray-600 hover:text-gray-800 font-medium">
+            ← Back to Step 1
+        </a>
+        <div class="text-sm text-gray-500">
+            Step 2 of 4
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const generateButton = document.getElementById('generate-phrases');
+    const loadingState = document.getElementById('loading-state');
+    const phrasesSection = document.getElementById('phrases-section');
+    const phrasesList = document.getElementById('phrases-list');
+    const phrasesCount = document.getElementById('phrases-count');
+
+    const keywords = {{ keywords|tojson }};
+
+    generateButton.addEventListener('click', function() {
+        // Show loading state
+        generateButton.classList.add('hidden');
+        loadingState.classList.remove('hidden');
+
+        // Send request to generate phrases
+        fetch('{{ url_for("create_audience_step2") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                keywords: keywords
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Hide loading state
+            loadingState.classList.add('hidden');
+            
+            // Display phrases
+            displayPhrases(data.phrases);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingState.classList.add('hidden');
+            generateButton.classList.remove('hidden');
+            alert('Error generating phrases. Please try again.');
+        });
+    });
+
+    function displayPhrases(phrases) {
+        phrasesList.innerHTML = '';
+        
+        phrases.forEach((phrase, index) => {
+            const phraseDiv = document.createElement('div');
+            phraseDiv.className = 'flex items-center space-x-3 p-3 bg-gray-50 rounded-lg';
+            phraseDiv.innerHTML = `
+                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="text-xs font-medium text-blue-600">${index + 1}</span>
+                </div>
+                <p class="text-sm text-gray-900 flex-1">${phrase}</p>
+                <button class="text-blue-600 hover:text-blue-800" onclick="editPhrase(this)">
+                    <span class="material-icons text-sm">edit</span>
+                </button>
+            `;
+            phrasesList.appendChild(phraseDiv);
+        });
+
+        phrasesCount.textContent = phrases.length;
+        phrasesSection.classList.remove('hidden');
+    }
+});
+
+function editPhrase(button) {
+    const phraseElement = button.previousElementSibling;
+    const currentText = phraseElement.textContent;
+    
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = currentText;
+    input.className = 'flex-1 px-2 py-1 border border-gray-300 rounded text-sm';
+    
+    phraseElement.replaceWith(input);
+    input.focus();
+    
+    input.addEventListener('blur', function() {
+        const newText = this.value.trim();
+        const newPhrase = document.createElement('p');
+        newPhrase.className = 'text-sm text-gray-900 flex-1';
+        newPhrase.textContent = newText || currentText;
+        this.replaceWith(newPhrase);
+    });
+    
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            this.blur();
+        }
+    });
+}
+</script>
+{% endblock %}

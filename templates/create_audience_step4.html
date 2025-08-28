@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+
+{% block title %}Create Audience - Step 4{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Create New Audience</h1>
+                <p class="text-gray-600 mt-1">Step 4: Get contact information and download your audience</p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 bg-green-600 rounded-full"></div>
+                <div class="w-2 h-2 bg-green-600 rounded-full"></div>
+                <div class="w-2 h-2 bg-green-600 rounded-full"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audience Summary -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Audience Summary</h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="flex items-center space-x-2 mb-2">
+                    <span class="material-icons text-blue-600 text-sm">tag</span>
+                    <span class="text-sm font-medium text-gray-900">Keywords</span>
+                </div>
+                <p class="text-2xl font-bold text-gray-900">{{ audience_data.keywords|length if audience_data.keywords else 0 }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="flex items-center space-x-2 mb-2">
+                    <span class="material-icons text-green-600 text-sm">chat</span>
+                    <span class="text-sm font-medium text-gray-900">Phrases</span>
+                </div>
+                <p class="text-2xl font-bold text-gray-900">{{ audience_data.phrases|length if audience_data.phrases else 0 }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="flex items-center space-x-2 mb-2">
+                    <span class="material-icons text-purple-600 text-sm">people</span>
+                    <span class="text-sm font-medium text-gray-900">Potential Contacts</span>
+                </div>
+                <p class="text-2xl font-bold text-gray-900" id="contact-count">0</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Information Retrieval -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <div class="mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-2">Get Contact Information</h2>
+            <p class="text-sm text-gray-600">I'll search TruePeopleSearch.com and other sources to get addresses, phone numbers, and email addresses for the people we found.</p>
+        </div>
+
+        <div class="mb-6">
+            <button id="get-contacts" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200 flex items-center">
+                <span class="material-icons mr-2">contact_phone</span>
+                Get Contact Information
+            </button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="hidden">
+            <div class="space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                    <p class="text-gray-600">Retrieving contact information...</p>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span class="text-sm text-gray-600">Searching TruePeopleSearch.com</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span class="text-sm text-gray-600">Finding email addresses</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span class="text-sm text-gray-600">Validating contact information</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div id="results-section" class="hidden">
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Contact Information Retrieved</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="material-icons text-green-600 text-sm">email</span>
+                            <span class="text-sm font-medium text-gray-900">Emails Found</span>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900" id="emails-found">0</p>
+                    </div>
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="material-icons text-green-600 text-sm">phone</span>
+                            <span class="text-sm font-medium text-gray-900">Phone Numbers</span>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900" id="phones-found">0</p>
+                    </div>
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="material-icons text-green-600 text-sm">location_on</span>
+                            <span class="text-sm font-medium text-gray-900">Addresses</span>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900" id="addresses-found">0</p>
+                    </div>
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="material-icons text-green-600 text-sm">verified</span>
+                            <span class="text-sm font-medium text-gray-900">Verified</span>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900" id="verified-contacts">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Contacts Preview -->
+            <div class="mb-6">
+                <h4 class="text-md font-medium text-gray-900 mb-3">Sample Contacts</h4>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contacts-preview" class="bg-white divide-y divide-gray-200">
+                            <!-- Sample contacts will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Download Options -->
+            <div class="border-t border-gray-200 pt-6">
+                <h4 class="text-md font-medium text-gray-900 mb-4">Download Your Audience</h4>
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                    <button id="download-csv" 
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200 flex items-center justify-center">
+                        <span class="material-icons mr-2">download</span>
+                        Download CSV
+                    </button>
+                    <button id="save-audience" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200 flex items-center justify-center">
+                        <span class="material-icons mr-2">save</span>
+                        Save to Audiences
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="flex justify-between">
+        <a href="{{ url_for('create_audience_step3') }}" 
+           class="text-gray-600 hover:text-gray-800 font-medium">
+            ← Back to Step 3
+        </a>
+        <div class="text-sm text-gray-500">
+            Step 4 of 4
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const getContactsButton = document.getElementById('get-contacts');
+    const loadingState = document.getElementById('loading-state');
+    const resultsSection = document.getElementById('results-section');
+    const contactCount = document.getElementById('contact-count');
+    const emailsFound = document.getElementById('emails-found');
+    const phonesFound = document.getElementById('phones-found');
+    const addressesFound = document.getElementById('addresses-found');
+    const verifiedContacts = document.getElementById('verified-contacts');
+    const contactsPreview = document.getElementById('contacts-preview');
+    const downloadCsvButton = document.getElementById('download-csv');
+    const saveAudienceButton = document.getElementById('save-audience');
+
+    let audienceId = null;
+
+    getContactsButton.addEventListener('click', function() {
+        // Show loading state
+        getContactsButton.classList.add('hidden');
+        loadingState.classList.remove('hidden');
+
+        // Send request to get contact information
+        fetch('{{ url_for("create_audience_step4") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                filtered_results: [] // This would come from previous step
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Hide loading state
+            loadingState.classList.add('hidden');
+            
+            // Store audience ID
+            audienceId = data.audience_id;
+            
+            // Display results
+            displayContactResults(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingState.classList.add('hidden');
+            getContactsButton.classList.remove('hidden');
+            alert('Error retrieving contact information. Please try again.');
+        });
+    });
+
+    function displayContactResults(data) {
+        // Update stats
+        contactCount.textContent = data.contact_count;
+        emailsFound.textContent = data.contact_count;
+        phonesFound.textContent = data.contact_count;
+        addressesFound.textContent = data.contact_count;
+        verifiedContacts.textContent = data.contact_count;
+
+        // Show sample contacts (simulated)
+        contactsPreview.innerHTML = `
+            <tr>
+                <td class="px-3 py-2 text-sm text-gray-900">John Doe</td>
+                <td class="px-3 py-2 text-sm text-gray-900">john.doe@example.com</td>
+                <td class="px-3 py-2 text-sm text-gray-900">555-123-4567</td>
+                <td class="px-3 py-2 text-sm text-gray-900">New York, NY</td>
+            </tr>
+            <tr>
+                <td class="px-3 py-2 text-sm text-gray-900">Jane Smith</td>
+                <td class="px-3 py-2 text-sm text-gray-900">jane.smith@example.com</td>
+                <td class="px-3 py-2 text-sm text-gray-900">555-987-6543</td>
+                <td class="px-3 py-2 text-sm text-gray-900">Los Angeles, CA</td>
+            </tr>
+            <tr>
+                <td class="px-3 py-2 text-sm text-gray-900">Mike Johnson</td>
+                <td class="px-3 py-2 text-sm text-gray-900">mike.johnson@example.com</td>
+                <td class="px-3 py-2 text-sm text-gray-900">555-456-7890</td>
+                <td class="px-3 py-2 text-sm text-gray-900">Chicago, IL</td>
+            </tr>
+        `;
+
+        resultsSection.classList.remove('hidden');
+    }
+
+    downloadCsvButton.addEventListener('click', function() {
+        if (audienceId) {
+            window.location.href = `/audiences/create/download/${audienceId}`;
+        } else {
+            alert('Please complete the contact retrieval process first.');
+        }
+    });
+
+    saveAudienceButton.addEventListener('click', function() {
+        if (audienceId) {
+            window.location.href = '{{ url_for("audiences") }}';
+        } else {
+            alert('Please complete the contact retrieval process first.');
+        }
+    });
+});
+</script>
+{% endblock %}

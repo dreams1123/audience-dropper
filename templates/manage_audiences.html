@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Audiences - Audience Dropper{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Manage Audiences</h1>
+                <p class="text-gray-600 mt-1">Edit, duplicate, and manage your target audiences.</p>
+            </div>
+            <a href="{{ url_for('create_audience_step1') }}" 
+               class="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition duration-200 flex items-center justify-center sm:justify-start">
+                <span class="material-icons mr-2 text-sm sm:text-base">add</span>
+                <span class="text-sm sm:text-base">Create New</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+            <div class="flex-1 max-w-md">
+                <div class="relative">
+                    <span class="material-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                        search
+                    </span>
+                    <input type="text" placeholder="Search audiences..." 
+                           class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                <select class="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option>All Categories</option>
+                    <option>Business & Professional</option>
+                    <option>E-commerce & Retail</option>
+                    <option>Technology</option>
+                    <option>Health & Wellness</option>
+                </select>
+                
+                <select class="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option>All Status</option>
+                    <option>Active</option>
+                    <option>Paused</option>
+                    <option>Draft</option>
+                </select>
+                
+                <button class="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200 flex items-center justify-center">
+                    <span class="material-icons text-sm mr-2">filter_list</span>
+                    <span class="text-sm">Filter</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audiences Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            </div>
+                        </th>
+                        <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Audience
+                        </th>
+                        <th class="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Category
+                        </th>
+                        <th class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Size
+                        </th>
+                        <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th class="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Created
+                        </th>
+                        <th class="hidden xl:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Performance
+                        </th>
+                        <th class="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for audience in audiences %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-3 sm:px-6 py-4 whitespace-nowrap">
+                            <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        </td>
+                        <td class="px-3 sm:px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <span class="material-icons text-blue-600 text-xs sm:text-sm">group</span>
+                                </div>
+                                <div class="ml-2 sm:ml-4">
+                                    <div class="text-sm font-medium text-gray-900">{{ audience.name }}</div>
+                                    <div class="text-xs sm:text-sm text-gray-500 hidden sm:block">{{ audience.description[:50] }}{% if audience.description|length > 50 %}...{% endif %}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="hidden lg:table-cell px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                {{ audience.category if audience.category else 'Uncategorized' }}
+                            </span>
+                        </td>
+                        <td class="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            150K users
+                        </td>
+                        <td class="px-3 sm:px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                         {% if audience.status == 'active' %}bg-green-100 text-green-800
+                                         {% elif audience.status == 'paused' %}bg-yellow-100 text-yellow-800
+                                         {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ audience.status.title() if audience.status else 'Draft' }}
+                            </span>
+                        </td>
+                        <td class="hidden lg:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ audience.created_at.strftime('%b %d, %Y') if audience.created_at else 'N/A' }}
+                        </td>
+                        <td class="hidden xl:table-cell px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex items-center">
+                                    <span class="text-sm font-medium text-gray-900 mr-2">8.5</span>
+                                    <div class="w-16 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="flex items-center justify-end space-x-2">
+                                <button class="text-blue-600 hover:text-blue-900" title="Edit">
+                                    <span class="material-icons text-sm">edit</span>
+                                </button>
+                                <button class="text-gray-600 hover:text-gray-900" title="Duplicate">
+                                    <span class="material-icons text-sm">content_copy</span>
+                                </button>
+                                <button class="text-gray-600 hover:text-gray-900" title="View Details">
+                                    <span class="material-icons text-sm">visibility</span>
+                                </button>
+                                <div class="relative group">
+                                    <button class="text-gray-600 hover:text-gray-900" title="More Options">
+                                        <span class="material-icons text-sm">more_vert</span>
+                                    </button>
+                                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
+                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export Data</a>
+                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Share</a>
+                                        <hr class="my-1">
+                                        <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="px-6 py-12 text-center">
+                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="material-icons text-gray-400 text-2xl">group</span>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">No audiences found</h3>
+                            <p class="text-gray-600 mb-6">Create your first audience to get started.</p>
+                            <a href="{{ url_for('create_audience_step1') }}" 
+                               class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200 inline-flex items-center">
+                                <span class="material-icons mr-2">add</span>
+                                Create Audience
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if audiences %}
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+            <div class="flex-1 flex justify-between sm:hidden">
+                <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Previous
+                </a>
+                <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Next
+                </a>
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm text-gray-700">
+                        Showing <span class="font-medium">1</span> to <span class="font-medium">{{ audiences|length }}</span> of <span class="font-medium">{{ audiences|length }}</span> results
+                    </p>
+                </div>
+                <div>
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="material-icons text-sm">chevron_left</span>
+                        </a>
+                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            1
+                        </a>
+                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="material-icons text-sm">chevron_right</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Bulk Actions -->
+    {% if audiences %}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-gray-700">Selected: <span class="font-medium">0</span> audiences</span>
+                <button class="text-gray-600 hover:text-gray-800 text-sm font-medium">Select All</button>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                <select class="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option>Bulk Actions</option>
+                    <option>Activate</option>
+                    <option>Pause</option>
+                    <option>Duplicate</option>
+                    <option>Delete</option>
+                </select>
+                <button class="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition duration-200">
+                    Apply
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
