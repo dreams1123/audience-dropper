@@ -3,7 +3,7 @@
 Database initialization script for Audience Dropper
 This script sets up the MongoDB collections and creates a test user.
 """
-
+import certifi
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
 from datetime import datetime
@@ -18,7 +18,7 @@ def init_database():
     
     # Connect to MongoDB
     try:
-        client = MongoClient(os.getenv('MONGODB_URI', 'mongodb://localhost:27017/'))
+        client = MongoClient(os.getenv('MONGODB_URI', 'mongodb://localhost:27017/'), tls=True, tlsCAFile=certifi.where())
         db = client['audience_dropper']
         
         print("✅ Connected to MongoDB successfully!")
