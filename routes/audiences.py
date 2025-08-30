@@ -6,6 +6,7 @@ from utils.audience_helpers import (
     generate_phrases_from_keywords, search_social_platforms,
     analyze_and_filter_content, get_contact_information, generate_csv
 )
+from datetime import datetime
 
 audiences_bp = Blueprint('audiences', __name__)
 
@@ -59,21 +60,114 @@ def create_audience_step1():
                 result = get_llm_summary_and_keywords(conversation_history)
                 llm_response = f"Based on our conversation, I've analyzed your responses and generated keywords to help you find your target audience. Here's what I found: {result.get('summary', '')}"
                 keywords = result.get('keywords', [])
+                
+                # Store the processed data in the database for persistent access
+                audience_data = {
+                    'user_id': current_user.id,
+                    'conversation_history': conversation_history,
+                    'summary': result.get('summary', ''),
+                    'keywords': keywords,
+                    'status': 'processing',
+                    'created_at': datetime.utcnow()
+                }
+                
+                # Save to database
+                from utils.audience_helpers import save_audience_conversation
+                audience_id = save_audience_conversation(audience_data)
+                
+                # Store audience_id in session for future steps
+                session['audience_creation']['audience_id'] = audience_id
+                
+                # Check if results are good enough to proceed
+                results_quality = assess_results_quality(keywords, result.get('summary', ''))
+                
+                return jsonify({
+                    'response': llm_response,
+                    'keywords': keywords,
+                    'summary': result.get('summary', ''),
+                    'audience_id': audience_id,
+                    'results_quality': results_quality,
+                    'can_proceed': results_quality['score'] >= 7,  # Minimum quality score
+                    'show_next_button': results_quality['score'] >= 7
+                })
+                
             except Exception as e:
                 print(f"Error using LLM: {e}")
                 llm_response = simulate_llm_chatbot(user_input, conversation_history)
                 keywords = extract_keywords_from_conversation(conversation_history)
+                
+                return jsonify({
+                    'response': llm_response,
+                    'keywords': keywords,
+                    'can_proceed': False,
+                    'show_next_button': False,
+                    'error': 'LLM processing failed, using fallback'
+                })
         else:
             # Use regular chatbot for questions
             llm_response = simulate_llm_chatbot(user_input, conversation_history)
             keywords = []
-        
-        return jsonify({
-            'response': llm_response,
-            'keywords': keywords
-        })
+            
+            return jsonify({
+                'response': llm_response,
+                'keywords': keywords,
+                'can_proceed': False,
+                'show_next_button': False
+            })
     
     return render_template('create_audience_step1.html')
+
+def assess_results_quality(keywords, summary):
+    """Assess the quality of generated keywords and summary"""
+    score = 0
+    feedback = []
+    
+    # Check keywords quality
+    if len(keywords) >= 8:
+        score += 3
+        feedback.append("Good number of keywords generated")
+    elif len(keywords) >= 5:
+        score += 2
+        feedback.append("Adequate number of keywords")
+    else:
+        score += 1
+        feedback.append("Limited keywords generated")
+    
+    # Check summary quality
+    if summary and len(summary) > 50:
+        score += 3
+        feedback.append("Detailed summary provided")
+    elif summary and len(summary) > 20:
+        score += 2
+        feedback.append("Basic summary provided")
+    else:
+        score += 1
+        feedback.append("Minimal summary")
+    
+    # Check keyword relevance (basic check)
+    relevant_keywords = [kw for kw in keywords if len(kw) > 2 and not kw.isdigit()]
+    if len(relevant_keywords) >= 6:
+        score += 2
+        feedback.append("Keywords appear relevant")
+    else:
+        score += 1
+        feedback.append("Some keywords may need refinement")
+    
+    # Check for common marketing terms
+    marketing_terms = ['audience', 'target', 'market', 'customer', 'business', 'product', 'service']
+    marketing_matches = sum(1 for kw in keywords if any(term in kw.lower() for term in marketing_terms))
+    if marketing_matches >= 2:
+        score += 2
+        feedback.append("Keywords align with marketing concepts")
+    else:
+        score += 1
+        feedback.append("Consider more marketing-focused keywords")
+    
+    return {
+        'score': min(score, 10),  # Max score of 10
+        'feedback': feedback,
+        'grade': 'A' if score >= 8 else 'B' if score >= 6 else 'C' if score >= 4 else 'D'
+    }
 
 @audiences_bp.route('/audiences/create/step2', methods=['GET', 'POST'])
 @login_required
@@ -83,17 +177,48 @@ def create_audience_step2():
         data = request.get_json()
         keywords = data.get('keywords', [])
         
-        # Save keywords to session
-        if 'audience_creation' not in session:
-            session['audience_creation'] = {}
-        session['audience_creation']['keywords'] = keywords
+        # Get audience_id from session
+        audience_id = session.get('audience_creation', {}).get('audience_id')
         
-        # Generate phrases based on keywords
-        phrases = generate_phrases_from_keywords(keywords)
-        
-        return jsonify({'phrases': phrases})
+        if audience_id:
+            # Update the database with phrases
+            from utils.audience_helpers import update_audience_conversation
+            phrases = generate_phrases_from_keywords(keywords)
+            
+            update_data = {
+                'phrases': phrases,
+                'step2_completed': True,
+                'step2_completed_at': datetime.utcnow()
+            }
+            update_audience_conversation(audience_id, update_data)
+            
+            return jsonify({'phrases': phrases})
+        else:
+            # Fallback to session storage
+            if 'audience_creation' not in session:
+                session['audience_creation'] = {}
+            session['audience_creation']['keywords'] = keywords
+            
+            phrases = generate_phrases_from_keywords(keywords)
+            return jsonify({'phrases': phrases})
     
-    # Get keywords from session
+    # Get data from database or session
+    audience_id = session.get('audience_creation', {}).get('audience_id')
+    
+    if audience_id:
+        # Get data from database
+        from utils.audience_helpers import get_audience_conversation
+        audience_data = get_audience_conversation(audience_id)
+        
+        if audience_data:
+            keywords = audience_data.get('keywords', [])
+            summary = audience_data.get('summary', '')
+            return render_template('create_audience_step2.html', 
+                                keywords=keywords, 
+                                summary=summary,
+                                audience_data=audience_data)
+    
+    # Fallback to session data
     keywords = session.get('audience_creation', {}).get('keywords', [])
     return render_template('create_audience_step2.html', keywords=keywords)
 

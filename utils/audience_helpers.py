@@ -166,3 +166,61 @@ def get_user_audiences(user_id):
 def get_audience_by_id(audience_id, user_id):
     """Get a specific audience by ID for a user"""
     return db.audiences.find_one({'_id': ObjectId(audience_id), 'user_id': user_id})
+
+def save_audience_conversation(audience_data):
+    """
+    Save audience conversation data to database for persistent access
+    
+    Args:
+        audience_data: Dictionary containing conversation data
+        
+    Returns:
+        audience_id: The ID of the saved audience record
+    """
+    try:
+        # Insert into audience_conversations collection
+        result = db.audience_conversations.insert_one(audience_data)
+        return str(result.inserted_id)
+    except Exception as e:
+        print(f"Error saving audience conversation: {e}")
+        return None
+
+def get_audience_conversation(audience_id):
+    """
+    Retrieve audience conversation data from database
+    
+    Args:
+        audience_id: The ID of the audience record
+        
+    Returns:
+        audience_data: Dictionary containing conversation data
+    """
+    try:
+        audience_data = db.audience_conversations.find_one({'_id': ObjectId(audience_id)})
+        if audience_data:
+            audience_data['_id'] = str(audience_data['_id'])
+        return audience_data
+    except Exception as e:
+        print(f"Error retrieving audience conversation: {e}")
+        return None
+
+def update_audience_conversation(audience_id, update_data):
+    """
+    Update audience conversation data in database
+    
+    Args:
+        audience_id: The ID of the audience record
+        update_data: Dictionary containing fields to update
+        
+    Returns:
+        success: Boolean indicating if update was successful
+    """
+    try:
+        result = db.audience_conversations.update_one(
+            {'_id': ObjectId(audience_id)},
+            {'$set': update_data}
+        )
+        return result.modified_count > 0
+    except Exception as e:
+        print(f"Error updating audience conversation: {e}")
+        return False
