@@ -9,6 +9,7 @@ from werkzeug.security import generate_password_hash
 from datetime import datetime
 import os
 from dotenv import load_dotenv
+from utils.database import init_database as init_db_structure
 
 # Load environment variables
 load_dotenv()
@@ -16,22 +17,15 @@ load_dotenv()
 def init_database():
     """Initialize the database with required collections and test data"""
     
+    # Initialize database structure
+    init_db_structure()
+    
     # Connect to MongoDB
     try:
         client = MongoClient(os.getenv('MONGODB_URI', 'mongodb://localhost:27017/'), tls=True, tlsCAFile=certifi.where())
         db = client['audience_dropper']
         
         print("✅ Connected to MongoDB successfully!")
-        
-        # Create collections if they don't exist
-        collections = ['users', 'audiences', 'access_requests']
-        
-        for collection_name in collections:
-            if collection_name not in db.list_collection_names():
-                db.create_collection(collection_name)
-                print(f"✅ Created collection: {collection_name}")
-            else:
-                print(f"ℹ️  Collection already exists: {collection_name}")
         
         # Create a test user if no users exist
         if db.users.count_documents({}) == 0:

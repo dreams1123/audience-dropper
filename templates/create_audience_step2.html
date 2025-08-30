@@ -68,7 +68,7 @@
                 <div class="text-sm text-gray-600">
                     <span id="phrases-count">0</span> phrases generated
                 </div>
-                <a href="{{ url_for('create_audience_step3') }}" 
+                <a href="{{ url_for('audiences.create_audience_step3') }}" 
                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
                     Continue to Step 3
                 </a>
@@ -78,7 +78,7 @@
 
     <!-- Navigation -->
     <div class="flex justify-between">
-        <a href="{{ url_for('create_audience_step1') }}" 
+        <a href="{{ url_for('audiences.create_audience_step1') }}" 
            class="text-gray-600 hover:text-gray-800 font-medium">
             ← Back to Step 1
         </a>
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingState.classList.remove('hidden');
 
         // Send request to generate phrases
-        fetch('{{ url_for("create_audience_step2") }}', {
+        fetch('{{ url_for("audiences.create_audience_step2") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

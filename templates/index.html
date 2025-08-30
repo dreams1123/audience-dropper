@@ -22,14 +22,14 @@
             
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition duration-200 hover-lift">
+                    <a href="{{ url_for('main.dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition duration-200 hover-lift">
                         Go to Dashboard
                     </a>
                 {% else %}
-                    <a href="{{ url_for('request_access') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition duration-200 hover-lift">
+                    <a href="{{ url_for('auth.request_access') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition duration-200 hover-lift">
                         Get Started
                     </a>
-                    <a href="{{ url_for('signin') }}" class="border-2 border-gray-300 hover:border-blue-500 text-gray-700 hover:text-blue-600 px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition duration-200 hover-lift">
+                    <a href="{{ url_for('auth.signin') }}" class="border-2 border-gray-300 hover:border-blue-500 text-gray-700 hover:text-blue-600 px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition duration-200 hover-lift">
                         Sign In
                     </a>
                 {% endif %}
@@ -76,7 +76,7 @@
             <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Ready to Transform Your Audience Strategy?</h2>
             <p class="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8">Join thousands of marketers who trust Audience Dropper for their audience management needs.</p>
             {% if not current_user.is_authenticated %}
-                <a href="{{ url_for('request_access') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition duration-200 hover-lift">
+                <a href="{{ url_for('auth.request_access') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition duration-200 hover-lift">
                     Request Access Now
                 </a>
             {% endif %}

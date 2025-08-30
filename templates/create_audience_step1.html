@@ -81,7 +81,7 @@
             <!-- Keywords will be populated here -->
         </div>
         <div class="flex justify-end">
-            <a href="{{ url_for('create_audience_step2') }}" 
+            <a href="{{ url_for('audiences.create_audience_step2') }}" 
                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
                 Continue to Step 2
             </a>
@@ -90,7 +90,7 @@
 
     <!-- Navigation -->
     <div class="flex justify-between">
-        <a href="{{ url_for('audiences') }}" 
+        <a href="{{ url_for('audiences.audiences') }}" 
            class="text-gray-600 hover:text-gray-800 font-medium">
             ← Back to Audiences
         </a>
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
         chatInput.value = '';
 
         // Send to server
-        fetch('{{ url_for("create_audience_step1") }}', {
+        fetch('{{ url_for("audiences.create_audience_step1") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

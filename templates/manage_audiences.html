@@ -11,7 +11,7 @@
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Manage Audiences</h1>
                 <p class="text-gray-600 mt-1">Edit, duplicate, and manage your target audiences.</p>
             </div>
-            <a href="{{ url_for('create_audience_step1') }}" 
+            <a href="{{ url_for('audiences.create_audience_step1') }}" 
                class="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition duration-200 flex items-center justify-center sm:justify-start">
                 <span class="material-icons mr-2 text-sm sm:text-base">add</span>
                 <span class="text-sm sm:text-base">Create New</span>
@@ -169,7 +169,7 @@
                             </div>
                             <h3 class="text-lg font-medium text-gray-900 mb-2">No audiences found</h3>
                             <p class="text-gray-600 mb-6">Create your first audience to get started.</p>
-                            <a href="{{ url_for('create_audience_step1') }}" 
+                            <a href="{{ url_for('audiences.create_audience_step1') }}" 
                                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200 inline-flex items-center">
                                 <span class="material-icons mr-2">add</span>
                                 Create Audience

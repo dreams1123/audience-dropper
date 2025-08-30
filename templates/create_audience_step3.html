@@ -148,7 +148,7 @@
             </div>
 
             <div class="mt-6 flex justify-end">
-                <a href="{{ url_for('create_audience_step4') }}" 
+                <a href="{{ url_for('audiences.create_audience_step4') }}" 
                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
                     Continue to Step 4
                 </a>
@@ -158,7 +158,7 @@
 
     <!-- Navigation -->
     <div class="flex justify-between">
-        <a href="{{ url_for('create_audience_step2') }}" 
+        <a href="{{ url_for('audiences.create_audience_step2') }}" 
            class="text-gray-600 hover:text-gray-800 font-medium">
             ← Back to Step 2
         </a>
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingState.classList.remove('hidden');
 
         // Send request to search platforms
-        fetch('{{ url_for("create_audience_step3") }}', {
+        fetch('{{ url_for("audiences.create_audience_step3") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
