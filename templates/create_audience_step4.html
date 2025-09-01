@@ -165,7 +165,7 @@
 
     <!-- Navigation -->
     <div class="flex justify-between">
-        <a href="{{ url_for('audiences.create_audience_step3') }}" 
+        <a href="{% if audience_id %}{{ url_for('audiences.create_audience_step3', audience_id=audience_id) }}{% else %}{{ url_for('audiences.create_audience_step3') }}{% endif %}" 
            class="text-gray-600 hover:text-gray-800 font-medium">
             ← Back to Step 3
         </a>
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingState.classList.remove('hidden');
 
         // Send request to get contact information
-        fetch('{{ url_for("audiences.create_audience_step4") }}', {
+        fetch('{% if audience_id %}{{ url_for("audiences.create_audience_step4", audience_id=audience_id) }}{% else %}{{ url_for("audiences.create_audience_step4") }}{% endif %}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

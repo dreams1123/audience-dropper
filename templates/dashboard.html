@@ -5,13 +5,13 @@
 {% block content %}
 <div class="space-y-8">
     <!-- Welcome Section -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div>
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Welcome back, {{ current_user.name or current_user.email }}!</h1>
-                <p class="text-gray-600 mt-1">Here's what's happening with your audiences today.</p>
+                <p class="text-gray-700 mt-1">Here's what's happening with your audiences today.</p>
             </div>
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 gradient-primary rounded-lg flex items-center justify-center glow-shadow pulse-slow">
                 <span class="material-icons text-white text-lg sm:text-xl">dashboard</span>
             </div>
         </div>
@@ -19,11 +19,11 @@
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover-lift">
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 hover-lift">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <span class="material-icons text-blue-600 text-lg">group</span>
+                    <div class="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center glow-shadow">
+                        <span class="material-icons text-white text-lg">group</span>
                     </div>
                 </div>
                 <div class="ml-4">
@@ -33,11 +33,11 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover-lift">
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 hover-lift">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                        <span class="material-icons text-green-600 text-lg">trending_up</span>
+                    <div class="w-8 h-8 gradient-secondary rounded-lg flex items-center justify-center glow-shadow">
+                        <span class="material-icons text-white text-lg">trending_up</span>
                     </div>
                 </div>
                 <div class="ml-4">
@@ -47,11 +47,11 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover-lift">
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 hover-lift">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <span class="material-icons text-purple-600 text-lg">visibility</span>
+                    <div class="w-8 h-8 gradient-accent rounded-lg flex items-center justify-center glow-shadow">
+                        <span class="material-icons text-white text-lg">visibility</span>
                     </div>
                 </div>
                 <div class="ml-4">

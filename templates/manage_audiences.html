@@ -144,9 +144,10 @@
                                 <button class="text-gray-600 hover:text-gray-900" title="Duplicate">
                                     <span class="material-icons text-sm">content_copy</span>
                                 </button>
-                                <button class="text-gray-600 hover:text-gray-900" title="View Details">
+                                <a href="{{ url_for('audiences.audience_details', audience_id=audience._id) }}" 
+                                   class="text-gray-600 hover:text-gray-900" title="View Details">
                                     <span class="material-icons text-sm">visibility</span>
-                                </button>
+                                </a>
                                 <div class="relative group">
                                     <button class="text-gray-600 hover:text-gray-900" title="More Options">
                                         <span class="material-icons text-sm">more_vert</span>

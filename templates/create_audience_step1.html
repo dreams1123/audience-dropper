@@ -24,7 +24,7 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
         <div class="mb-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-2">AI Assistant</h2>
-            <p class="text-sm text-gray-600">I'll ask you 6 questions to understand your target audience. Answer each question to get personalized keywords and insights.</p>
+            <p class="text-sm text-gray-600">I'll ask you 5 questions to understand your target audience. Answer each question to get personalized keywords and insights.</p>
         </div>
 
         <!-- Chat Messages -->
@@ -35,6 +35,25 @@
                 </div>
                 <div class="bg-blue-50 rounded-lg p-3 max-w-3xl">
                     <p class="text-sm text-gray-900">Hello! I'm here to help you identify your target audience. Let me ask you a few questions to understand your business and goals better.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thinking Indicator (Hidden by default) -->
+        <div id="thinking-indicator" class="hidden mb-6">
+            <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="material-icons text-white text-sm">smart_toy</span>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-3 max-w-3xl">
+                    <div class="flex items-center space-x-2">
+                        <div class="flex space-x-1">
+                            <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                            <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+                            <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                        </div>
+                        <span class="text-sm text-gray-600">Thinking...</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -50,42 +69,30 @@
                 Send
             </button>
         </div>
+
+        <!-- Step Navigation -->
+        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
+            <button id="previous-step" 
+                    class="text-gray-600 hover:text-gray-800 font-medium flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                <span class="material-icons mr-1 text-sm">arrow_back</span>
+                Previous Step
+            </button>
+            <div class="text-sm text-gray-500">
+                Question <span id="current-question">1</span> of 5
+            </div>
+            <button id="next-step" 
+                    class="text-blue-600 hover:text-blue-800 font-medium flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                Next Step
+                <span class="material-icons ml-1 text-sm">arrow_forward</span>
+            </button>
+        </div>
     </div>
 
     <!-- Results Section (Hidden initially) -->
     <div id="results-section" class="hidden">
-        <!-- Quality Assessment -->
-        <div id="quality-assessment" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Results Quality Assessment</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="flex items-center space-x-2 mb-2">
-                        <span class="material-icons text-blue-600 text-sm">grade</span>
-                        <span class="text-sm font-medium text-gray-900">Quality Score</span>
-                    </div>
-                    <p class="text-2xl font-bold text-gray-900" id="quality-score">-</p>
-                </div>
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="flex items-center space-x-2 mb-2">
-                        <span class="material-icons text-green-600 text-sm">school</span>
-                        <span class="text-sm font-medium text-gray-900">Grade</span>
-                    </div>
-                    <p class="text-2xl font-bold text-gray-900" id="quality-grade">-</p>
-                </div>
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="flex items-center space-x-2 mb-2">
-                        <span class="material-icons text-purple-600 text-sm">check_circle</span>
-                        <span class="text-sm font-medium text-gray-900">Status</span>
-                    </div>
-                    <p class="text-2xl font-bold text-gray-900" id="proceed-status">-</p>
-                </div>
-            </div>
-            
-            <!-- Feedback -->
-            <div id="quality-feedback" class="space-y-2">
-                <!-- Feedback items will be populated here -->
-            </div>
-        </div>
+
 
         <!-- Generated Keywords -->
         <div id="keywords-section" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
@@ -115,7 +122,7 @@
                     Try Again
                 </button>
                 <a id="next-button" 
-                   href="{{ url_for('audiences.create_audience_step2') }}" 
+                   href="#" 
                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200 hidden">
                     Continue to Step 2
                 </a>
@@ -142,24 +149,77 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatMessages = document.getElementById('chat-messages');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
+    const thinkingIndicator = document.getElementById('thinking-indicator');
     const resultsSection = document.getElementById('results-section');
-    const qualityAssessment = document.getElementById('quality-assessment');
     const keywordsSection = document.getElementById('keywords-section');
     const summarySection = document.getElementById('summary-section');
     const nextButton = document.getElementById('next-button');
     const retryButton = document.getElementById('retry-button');
-    const qualityScore = document.getElementById('quality-score');
-    const qualityGrade = document.getElementById('quality-grade');
-    const proceedStatus = document.getElementById('proceed-status');
-    const qualityFeedback = document.getElementById('quality-feedback');
     const keywordsList = document.getElementById('keywords-list');
     const keywordsCount = document.getElementById('keywords-count');
     const audienceSummary = document.getElementById('audience-summary');
+    const previousStepBtn = document.getElementById('previous-step');
+    const nextStepBtn = document.getElementById('next-step');
+    const currentQuestionSpan = document.getElementById('current-question');
 
     let conversationHistory = [];
+    let currentQuestionIndex = 0;
+    let savedConversations = {};
+    let audienceId = null;
+    let conversationLoaded = false;
 
-    // Initial bot message
-    addBotMessage("Who are you looking for?");
+    // Questions array
+    const questions = [
+        "Who are you looking for?",
+        "What type of conversations are you looking for?",
+        "What topic in conversations are you looking for?",
+        "What product or service do you offer?",
+        "Describe the person you want to sell your product or service to?"
+    ];
+
+    // Helper function to check if a question is already in the conversation
+    function isQuestionInConversation(question) {
+        return conversationHistory.some(message => 
+            message.role === 'assistant' && message.content === question
+        );
+    }
+
+    // Load saved conversation from database if available
+    loadSavedConversation().then(() => {
+        // Initial bot message - only add if no conversation history exists
+        if (conversationHistory.length === 0) {
+            addBotMessage(questions[0]);
+            // Add the first question to conversation history
+            conversationHistory.push({
+                role: 'assistant',
+                content: questions[0]
+            });
+        } else {
+            // If we have conversation history, make sure we have the next question displayed
+            const questionsAnswered = Math.floor(conversationHistory.length / 2);
+            console.log('Questions answered from loaded conversation:', questionsAnswered);
+            
+            if (questionsAnswered < 5) {
+                const nextQuestion = questions[questionsAnswered];
+                
+                console.log('Next question should be:', nextQuestion);
+                console.log('Is question already in conversation?', isQuestionInConversation(nextQuestion));
+                
+                // Only add the next question if it's not already in the conversation
+                if (!isQuestionInConversation(nextQuestion)) {
+                    console.log('Adding next question to display and history');
+                    addBotMessage(nextQuestion);
+                    conversationHistory.push({
+                        role: 'assistant',
+                        content: nextQuestion
+                    });
+                } else {
+                    console.log('Next question already exists in conversation history');
+                }
+            }
+        }
+        conversationLoaded = true;
+    });
 
     sendButton.addEventListener('click', sendMessage);
     userInput.addEventListener('keypress', function(e) {
@@ -168,9 +228,93 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    previousStepBtn.addEventListener('click', goToPreviousStep);
+    nextStepBtn.addEventListener('click', goToNextStep);
+
+    function loadSavedConversation() {
+        // Check if we have a saved audience_id in session
+        return fetch('{{ url_for("audiences.get_saved_conversation") }}', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.conversation_history && data.conversation_history.length > 0) {
+                conversationHistory = data.conversation_history;
+                audienceId = data.audience_id;
+                
+                console.log('Loaded conversation history:', conversationHistory);
+                console.log('Conversation history length:', conversationHistory.length);
+                
+                // Rebuild chat display (without adding next question - that will be handled in the main loading logic)
+                rebuildChatDisplayWithoutNextQuestion();
+                
+                // Update question counter
+                updateQuestionCounter();
+                
+                // Show results if conversation is complete
+                if (conversationHistory.length >= 10) { // 5 questions * 2 (question + answer)
+                    showResults();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error loading saved conversation:', error);
+        });
+    }
+
+    function rebuildChatDisplayWithoutNextQuestion() {
+        chatMessages.innerHTML = '';
+        
+        // Add initial greeting
+        addBotMessage("Hello! I'm here to help you identify your target audience. Let me ask you a few questions to understand your business and goals better.", false);
+        
+        // Rebuild conversation without adding the next question
+        for (let i = 0; i < conversationHistory.length; i++) {
+            const message = conversationHistory[i];
+            if (message.role === 'user') {
+                addUserMessage(message.content, false);
+            } else if (message.role === 'assistant') {
+                addBotMessage(message.content, false);
+            }
+        }
+        
+        // Debug logging
+        console.log('Rebuilt chat display without next question. Conversation history length:', conversationHistory.length);
+        console.log('Questions answered:', Math.floor(conversationHistory.length / 2));
+    }
+
+    function rebuildChatDisplay() {
+        chatMessages.innerHTML = '';
+        
+        // Add initial greeting
+        addBotMessage("Hello! I'm here to help you identify your target audience. Let me ask you a few questions to understand your business and goals better.", false);
+        
+        // Rebuild conversation
+        for (let i = 0; i < conversationHistory.length; i++) {
+            const message = conversationHistory[i];
+            if (message.role === 'user') {
+                addUserMessage(message.content, false);
+            } else if (message.role === 'assistant') {
+                addBotMessage(message.content, false);
+            }
+        }
+        
+        // Debug logging
+        console.log('Rebuilt chat display. Conversation history length:', conversationHistory.length);
+        console.log('Questions answered:', Math.floor(conversationHistory.length / 2));
+    }
+
     function sendMessage() {
         const message = userInput.value.trim();
-        if (!message) return;
+        if (!message || !conversationLoaded) return;
+
+        // Disable input and show thinking indicator
+        userInput.disabled = true;
+        sendButton.disabled = true;
+        showThinkingIndicator();
 
         // Add user message to chat
         addUserMessage(message);
@@ -182,6 +326,9 @@ document.addEventListener('DOMContentLoaded', function() {
             content: message
         });
 
+        // Save conversation to database
+        saveConversationToDatabase();
+
         // Send to server
         fetch('{{ url_for("audiences.create_audience_step1") }}', {
             method: 'POST',
@@ -190,11 +337,20 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({
                 user_input: message,
-                conversation_history: conversationHistory
+                conversation_history: conversationHistory,
+                audience_id: audienceId
             })
         })
         .then(response => response.json())
         .then(data => {
+            // Hide thinking indicator
+            hideThinkingIndicator();
+            
+            // Re-enable input
+            userInput.disabled = false;
+            sendButton.disabled = false;
+            userInput.focus();
+
             // Add bot response to chat
             addBotMessage(data.response);
             conversationHistory.push({
@@ -202,20 +358,122 @@ document.addEventListener('DOMContentLoaded', function() {
                 content: data.response
             });
 
+            // Update audience_id if provided
+            if (data.audience_id) {
+                audienceId = data.audience_id;
+            }
+
+            // Update question counter
+            updateQuestionCounter();
+
             // If we have keywords, show results
             if (data.keywords && data.keywords.length > 0) {
                 displayResults(data);
             }
+
+            // Save updated conversation
+            saveConversationToDatabase();
+            
+            // Debug logging
+            console.log('Conversation history length:', conversationHistory.length);
+            console.log('Current question index:', currentQuestionIndex);
         })
         .catch(error => {
             console.error('Error:', error);
+            hideThinkingIndicator();
+            userInput.disabled = false;
+            sendButton.disabled = false;
+            userInput.focus();
             addBotMessage('Sorry, there was an error processing your response. Please try again.');
         });
     }
 
-    function addUserMessage(message) {
+    function saveConversationToDatabase() {
+        fetch('{{ url_for("audiences.save_conversation") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                conversation_history: conversationHistory,
+                audience_id: audienceId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.audience_id) {
+                audienceId = data.audience_id;
+            }
+        })
+        .catch(error => {
+            console.error('Error saving conversation:', error);
+        });
+    }
+
+    function showThinkingIndicator() {
+        thinkingIndicator.classList.remove('hidden');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideThinkingIndicator() {
+        thinkingIndicator.classList.add('hidden');
+    }
+
+    function updateQuestionCounter() {
+        // Calculate current question based on conversation history
+        const questionsAnswered = Math.floor(conversationHistory.length / 2);
+        currentQuestionIndex = Math.min(questionsAnswered, 5);
+        currentQuestionSpan.textContent = Math.min(currentQuestionIndex + 1, 5);
+        
+        // Update navigation buttons
+        previousStepBtn.disabled = currentQuestionIndex === 0;
+        nextStepBtn.disabled = currentQuestionIndex >= 5;
+    }
+
+    function goToPreviousStep() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            updateQuestionCounter();
+            
+            // Show the previous question and answer
+            const questionIndex = currentQuestionIndex * 2;
+            if (questionIndex < conversationHistory.length) {
+                // Highlight the current question in the chat
+                highlightCurrentQuestion();
+            }
+        }
+    }
+
+    function goToNextStep() {
+        if (currentQuestionIndex < 5) {
+            currentQuestionIndex++;
+            updateQuestionCounter();
+            
+            // Show the next question and answer
+            const questionIndex = currentQuestionIndex * 2;
+            if (questionIndex < conversationHistory.length) {
+                // Highlight the current question in the chat
+                highlightCurrentQuestion();
+            }
+        }
+    }
+
+    function highlightCurrentQuestion() {
+        // Remove previous highlights
+        const messageDivs = chatMessages.querySelectorAll('.message-div');
+        messageDivs.forEach(div => div.classList.remove('ring-2', 'ring-blue-500'));
+        
+        // Highlight current question
+        const currentMessageDiv = chatMessages.children[currentQuestionIndex * 2 + 1]; // +1 for initial greeting
+        if (currentMessageDiv) {
+            currentMessageDiv.classList.add('ring-2', 'ring-blue-500');
+            currentMessageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    function addUserMessage(message, scroll = true) {
         const messageDiv = document.createElement('div');
-        messageDiv.className = 'flex items-start space-x-3 justify-end';
+        messageDiv.className = 'flex items-start space-x-3 justify-end message-div';
         messageDiv.innerHTML = `
             <div class="bg-blue-600 rounded-lg p-3 max-w-3xl">
                 <p class="text-sm text-white">${message}</p>
@@ -225,12 +483,14 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (scroll) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
     }
 
-    function addBotMessage(message) {
+    function addBotMessage(message, scroll = true) {
         const messageDiv = document.createElement('div');
-        messageDiv.className = 'flex items-start space-x-3';
+        messageDiv.className = 'flex items-start space-x-3 message-div';
         messageDiv.innerHTML = `
             <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
                 <span class="material-icons text-white text-sm">smart_toy</span>
@@ -240,7 +500,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (scroll) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
     }
 
     function displayResults(data) {
@@ -262,43 +524,65 @@ document.addEventListener('DOMContentLoaded', function() {
             audienceSummary.innerHTML = `<p class="text-sm text-gray-900">${data.summary}</p>`;
         }
 
-        // Display quality assessment if available
-        if (data.results_quality) {
-            const quality = data.results_quality;
-            qualityScore.textContent = quality.score + '/10';
-            qualityGrade.textContent = quality.grade;
-            proceedStatus.textContent = data.can_proceed ? 'Ready' : 'Needs Improvement';
 
-            // Display feedback
-            qualityFeedback.innerHTML = '';
-            quality.feedback.forEach(feedback => {
-                const feedbackDiv = document.createElement('div');
-                feedbackDiv.className = 'flex items-center space-x-2 text-sm text-gray-700';
-                feedbackDiv.innerHTML = `
-                    <span class="material-icons text-green-600 text-sm">check</span>
-                    <span>${feedback}</span>
-                `;
-                qualityFeedback.appendChild(feedbackDiv);
-            });
-        }
 
-        // Show/hide next button based on quality
-        if (data.show_next_button) {
+        // Show next button when keywords are available
+        if (data.keywords && data.keywords.length > 0) {
             nextButton.classList.remove('hidden');
+            // Update the href with the audience ID
+            if (data.audience_id) {
+                nextButton.href = `/audiences/create/step2/${data.audience_id}`;
+                console.log('Updated button href to:', nextButton.href);
+                
+                // Update browser URL to include audience_id
+                const currentUrl = window.location.pathname;
+                if (!currentUrl.includes(data.audience_id)) {
+                    const newUrl = `/audiences/create/step1/${data.audience_id}`;
+                    window.history.pushState({}, '', newUrl);
+                    console.log('Updated browser URL to:', newUrl);
+                }
+            } else {
+                nextButton.href = `{{ url_for('audiences.create_audience_step2') }}`;
+                console.log('Updated button href to fallback:', nextButton.href);
+            }
         } else {
             nextButton.classList.add('hidden');
         }
     }
 
+    function showResults() {
+        // Fetch results from server
+        fetch('{{ url_for("audiences.get_conversation_results") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                audience_id: audienceId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            displayResults(data);
+        })
+        .catch(error => {
+            console.error('Error fetching results:', error);
+        });
+    }
+
     retryButton.addEventListener('click', function() {
         // Reset conversation
         conversationHistory = [];
+        currentQuestionIndex = 0;
+        audienceId = null;
         chatMessages.innerHTML = '';
         resultsSection.classList.add('hidden');
         nextButton.classList.add('hidden');
+        updateQuestionCounter();
         
         // Start over
-        addBotMessage("What type of business or service are you promoting?");
+        addBotMessage("Hello! I'm here to help you identify your target audience. Let me ask you a few questions to understand your business and goals better.");
+        addBotMessage(questions[0]);
     });
 });
 </script>

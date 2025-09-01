@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Audience Details - {{ audience._id }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-8">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Audience Details</h1>
+                <p class="text-gray-600 mt-1">Complete conversation history and analysis results</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{{ url_for('audiences.audiences') }}" 
+                   class="text-gray-600 hover:text-gray-800 font-medium">
+                    ← Back to Audiences
+                </a>
+                <a href="{{ url_for('audiences.create_audience_step1') }}" 
+                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
+                    Create New
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Generated Keywords -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Generated Keywords ({{ audience.keywords|length }})</h3>
+        <div class="flex flex-wrap gap-2 mb-4">
+            {% for keyword in audience.keywords %}
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+                {{ keyword }}
+            </span>
+            {% endfor %}
+        </div>
+        <p class="text-sm text-gray-600">These keywords will be used to search for your target audience across social platforms.</p>
+    </div>
+
+    <!-- Summary -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Audience Summary</h3>
+        <div class="bg-gray-50 rounded-lg p-4">
+            <p class="text-sm text-gray-900">{{ audience.summary }}</p>
+        </div>
+    </div>
+
+    <!-- Conversation History -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Conversation History</h3>
+        <div class="space-y-4 max-h-96 overflow-y-auto">
+            {% for message in audience.conversation_history %}
+            <div class="flex items-start space-x-3 {% if message.role == 'user' %}justify-end{% endif %}">
+                {% if message.role == 'assistant' %}
+                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="material-icons text-white text-sm">smart_toy</span>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-3 max-w-3xl">
+                    <p class="text-sm text-gray-900">{{ message.content }}</p>
+                </div>
+                {% else %}
+                <div class="bg-blue-600 rounded-lg p-3 max-w-3xl">
+                    <p class="text-sm text-white">{{ message.content }}</p>
+                </div>
+                <div class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="material-icons text-white text-sm">person</span>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Metadata -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Audience Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm font-medium text-gray-900">Status</p>
+                <p class="text-sm text-gray-600">{{ audience.status.title() if audience.status else 'Unknown' }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-900">Created</p>
+                <p class="text-sm text-gray-600">{{ audience.created_at.strftime('%B %d, %Y at %I:%M %p') if audience.created_at else 'Unknown' }}</p>
+            </div>
+            {% if audience.completed_at %}
+            <div>
+                <p class="text-sm font-medium text-gray-900">Completed</p>
+                <p class="text-sm text-gray-600">{{ audience.completed_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+            </div>
+            {% endif %}
+            {% if audience.updated_at %}
+            <div>
+                <p class="text-sm font-medium text-gray-900">Last Updated</p>
+                <p class="text-sm text-gray-600">{{ audience.updated_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+        <div class="text-sm text-gray-600">
+            <span>{{ audience.keywords|length }}</span> keywords generated
+        </div>
+        <div class="flex space-x-3">
+            <button onclick="window.print()" 
+                    class="border-2 border-gray-300 hover:border-blue-500 text-gray-700 hover:text-blue-600 px-6 py-3 rounded-lg font-medium transition duration-200">
+                <span class="material-icons mr-2 text-sm">print</span>
+                Print Report
+            </button>
+            <button onclick="exportData()" 
+                    class="border-2 border-gray-300 hover:border-blue-500 text-gray-700 hover:text-blue-600 px-6 py-3 rounded-lg font-medium transition duration-200">
+                <span class="material-icons mr-2 text-sm">download</span>
+                Export Data
+            </button>
+            <a href="{{ url_for('audiences.create_audience_step2', audience_id=audience._id) }}" 
+               class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
+                Continue to Step 2
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function exportData() {
+    const data = {
+        audience_id: '{{ audience._id }}',
+        summary: '{{ audience.summary }}',
+        keywords: {{ audience.keywords|tojson }},
+        conversation_history: {{ audience.conversation_history|tojson }},
+        created_at: '{{ audience.created_at.strftime("%Y-%m-%d %H:%M:%S") if audience.created_at else "" }}'
+    };
+    
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `audience-{{ audience._id }}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+</script>
+{% endblock %}

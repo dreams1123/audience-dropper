@@ -148,7 +148,7 @@
             </div>
 
             <div class="mt-6 flex justify-end">
-                <a href="{{ url_for('audiences.create_audience_step4') }}" 
+                <a href="{% if audience_id %}{{ url_for('audiences.create_audience_step4', audience_id=audience_id) }}{% else %}{{ url_for('audiences.create_audience_step4') }}{% endif %}" 
                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
                     Continue to Step 4
                 </a>
@@ -158,7 +158,7 @@
 
     <!-- Navigation -->
     <div class="flex justify-between">
-        <a href="{{ url_for('audiences.create_audience_step2') }}" 
+        <a href="{% if audience_id %}{{ url_for('audiences.create_audience_step2', audience_id=audience_id) }}{% else %}{{ url_for('audiences.create_audience_step2') }}{% endif %}" 
            class="text-gray-600 hover:text-gray-800 font-medium">
             ← Back to Step 2
         </a>
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingState.classList.remove('hidden');
 
         // Send request to search platforms
-        fetch('{{ url_for("audiences.create_audience_step3") }}', {
+        fetch('{% if audience_id %}{{ url_for("audiences.create_audience_step3", audience_id=audience_id) }}{% else %}{{ url_for("audiences.create_audience_step3") }}{% endif %}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -18,12 +18,21 @@ def simulate_llm_chatbot(user_input, conversation_history):
         "What type of conversations are you looking for?",
         "What topic in conversations are you looking for?",
         "What product or service do you offer?",
-        "Describe the person you want to sell your product or service to?",
-        "What are some things the person you are looking for would say if they were asking for your product or service?"
+        "Describe the person you want to sell your product or service to?"
     ]
     
-    # Check if we have enough conversation history to process with LLM
-    if len(conversation_history) >= len(questions):
+    # Calculate how many questions have been asked and answered
+    # Each question-answer pair takes 2 messages in conversation_history
+    questions_answered = len(conversation_history) // 2
+    
+    # Debug logging
+    print(f"Chatbot debug - Conversation history length: {len(conversation_history)}")
+    print(f"Chatbot debug - Questions answered: {questions_answered}")
+    print(f"Chatbot debug - User input: {user_input}")
+    
+    # Check if we have answered all 5 questions (10 messages: 5 questions + 5 answers)
+    if len(conversation_history) >= 10:
+        print("Chatbot debug - All questions answered, generating summary")
         # Use LLM to generate response based on conversation
         try:
             # Test LLM connection first
@@ -38,7 +47,10 @@ def simulate_llm_chatbot(user_input, conversation_history):
             return "Based on our conversation, I'll now generate 10 keywords to help you find your target audience."
     else:
         # Return the next question in the sequence
-        return questions[len(conversation_history)]
+        # If we have 0, 2, 4, 6, 8, 10 messages, we need questions 0, 1, 2, 3, 4, 5
+        next_question = questions[questions_answered]
+        print(f"Chatbot debug - Asking next question: {next_question}")
+        return next_question
 
 def extract_keywords_from_conversation(conversation_history):
     """Extract keywords from conversation using LLM"""
@@ -52,31 +64,137 @@ def extract_keywords_from_conversation(conversation_history):
             # Fallback to sample keywords if LLM is not available
             print("LLM server not available, using fallback keywords")
             sample_keywords = [
-                "target audience", "social media", "marketing", "business", "customers",
-                "online presence", "digital marketing", "lead generation", "sales", "growth"
+                "I need help with", "looking for solutions", "my business is struggling",
+                "need support", "anyone know a good", "recommendations for",
+                "just started", "trying to find", "need advice", "help me with"
             ]
             return sample_keywords[:10]
     except Exception as e:
         print(f"Error extracting keywords with LLM: {e}")
         # Fallback keywords
         sample_keywords = [
-            "target audience", "social media", "marketing", "business", "customers",
-            "online presence", "digital marketing", "lead generation", "sales", "growth"
+            "I need help with", "looking for solutions", "my business is struggling",
+            "need support", "anyone know a good", "recommendations for",
+            "just started", "trying to find", "need advice", "help me with"
         ]
         return sample_keywords[:10]
 
 def generate_phrases_from_keywords(keywords):
-    """Generate phrases based on keywords (simulated)"""
-    # This would use LLM to generate relevant phrases
+    """Generate 10 phrases based on keywords using LLM"""
+    try:
+        # Test LLM connection
+        if test_llm_connection():
+            # Use LLM to generate phrases
+            from utils.llm_server import get_llm_phrases_from_keywords
+            phrases = get_llm_phrases_from_keywords(keywords)
+            print(f"LLM generated {len(phrases)} phrases: {phrases}")
+            return phrases[:10]  # Ensure exactly 10 phrases
+        else:
+            print("LLM server not available, using fallback phrases")
+            return generate_fallback_phrases(keywords)
+    except Exception as e:
+        print(f"Error generating phrases with LLM: {e}")
+        return generate_fallback_phrases(keywords)
+
+def generate_fallback_phrases(keywords):
+    """Generate intelligent fallback phrases using prompt-based logic when LLM is not available"""
+    if not keywords:
+        return []
+    
+    # Create a prompt-based approach for generating natural phrases
     phrases = []
-    for keyword in keywords:
-        phrases.extend([
-            f"I need help with {keyword}",
-            f"Looking for {keyword} solutions",
-            f"Best {keyword} strategies",
-            f"{keyword} recommendations"
-        ])
+    
+    # Analyze keywords to understand context
+    keywords_text = ", ".join(keywords[:5])  # Use first 5 keywords for context
+    
+    # Generate phrases using intelligent prompting logic
+    phrases = generate_phrases_from_prompt_logic(keywords, keywords_text)
+    
+    return phrases[:10]  # Ensure exactly 10 phrases
+
+def generate_phrases_from_prompt_logic(keywords, keywords_text):
+    """Generate phrases using prompt-based logic instead of static templates"""
+    phrases = []
+    
+    # Define different phrase categories based on social media patterns
+    phrase_patterns = [
+        # Personal experience patterns
+        {
+            "pattern": "personal_struggle",
+            "examples": [
+                f"I'm dealing with {keywords[0].lower()}",
+                f"Just found out about {keywords[0].lower()}",
+                f"Been struggling with {keywords[0].lower()}",
+            ]
+        },
+        # Family/relationship patterns
+        {
+            "pattern": "family_concern", 
+            "examples": [
+                f"My mom has {keywords[0].lower()}" if len(keywords) > 0 else "My family member needs help",
+                f"My wife is dealing with {keywords[1].lower()}" if len(keywords) > 1 else "My partner needs support",
+                f"My dad was diagnosed with {keywords[0].lower()}" if len(keywords) > 0 else "My father needs help",
+            ]
+        },
+        # Help-seeking patterns
+        {
+            "pattern": "seeking_help",
+            "examples": [
+                f"Looking for help with {keywords[0].lower()}" if len(keywords) > 0 else "Need help and advice",
+                f"Does anyone know about {keywords[1].lower()}?" if len(keywords) > 1 else "Anyone have experience with this?",
+                f"Need advice on {keywords[2].lower()}" if len(keywords) > 2 else "Seeking guidance and support",
+            ]
+        },
+        # Community/support patterns
+        {
+            "pattern": "community_support",
+            "examples": [
+                f"Support group for {keywords[0].lower()}?" if len(keywords) > 0 else "Looking for support group",
+                f"Anyone else going through {keywords[1].lower()}?" if len(keywords) > 1 else "Others in similar situation?",
+            ]
+        }
+    ]
+    
+    # Generate phrases from each pattern category
+    for pattern_group in phrase_patterns:
+        for example in pattern_group["examples"]:
+            if len(phrases) < 10:
+                phrases.append(example)
+    
+    # If we still need more phrases, generate additional ones
+    while len(phrases) < 10:
+        remaining_needed = 10 - len(phrases)
+        additional_phrases = generate_additional_contextual_phrases(keywords, remaining_needed)
+        phrases.extend(additional_phrases)
+        break  # Avoid infinite loop
+    
     return phrases[:10]
+
+def generate_additional_contextual_phrases(keywords, count_needed):
+    """Generate additional contextual phrases when more are needed"""
+    additional = []
+    
+    # Create more natural variations based on keywords
+    for i in range(count_needed):
+        if i < len(keywords):
+            keyword = keywords[i]
+            
+            # Generate contextual phrases based on keyword analysis
+            if any(word in keyword.lower() for word in ['cancer', 'disease', 'illness', 'sick']):
+                additional.append(f"Recently diagnosed with {keyword.lower()}")
+            elif any(word in keyword.lower() for word in ['help', 'support', 'need']):
+                additional.append(f"Looking for {keyword.lower()} in my area")
+            elif any(word in keyword.lower() for word in ['treatment', 'therapy', 'doctor']):
+                additional.append(f"Best {keyword.lower()} recommendations?")
+            else:
+                # Generic but natural fallback
+                additional.append(f"Anyone have experience with {keyword.lower()}?")
+        else:
+            # Use remaining keywords cyclically
+            keyword = keywords[i % len(keywords)]
+            additional.append(f"Need guidance on {keyword.lower()}")
+    
+    return additional
 
 def search_social_platforms(keywords, phrases):
     """Search social platforms (simulated)"""
@@ -224,3 +342,43 @@ def update_audience_conversation(audience_id, update_data):
     except Exception as e:
         print(f"Error updating audience conversation: {e}")
         return False
+
+def get_user_latest_conversation(user_id):
+    """
+    Get the most recent conversation for a user
+    
+    Args:
+        user_id: The user ID
+        
+    Returns:
+        conversation_data: Dictionary containing conversation data or None
+    """
+    try:
+        conversation_data = db.audience_conversations.find_one(
+            {'user_id': user_id},
+            sort=[('created_at', -1)]  # Sort by creation date, newest first
+        )
+        return conversation_data
+    except Exception as e:
+        print(f"Error retrieving user's latest conversation: {e}")
+        return None
+
+def get_user_conversation_audiences(user_id):
+    """
+    Get all conversation-based audiences for a user
+    
+    Args:
+        user_id: The user ID
+        
+    Returns:
+        conversation_audiences: List of conversation data
+    """
+    try:
+        conversation_audiences = list(db.audience_conversations.find(
+            {'user_id': user_id},
+            sort=[('created_at', -1)]  # Sort by creation date, newest first
+        ))
+        return conversation_audiences
+    except Exception as e:
+        print(f"Error retrieving user's conversation audiences: {e}")
+        return []
