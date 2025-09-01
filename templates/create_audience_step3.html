@@ -5,23 +5,31 @@
 {% block content %}
 <div class="max-w-6xl mx-auto space-y-8">
     <!-- Header -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div>
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Create New Audience</h1>
-                <p class="text-gray-600 mt-1">Step 3: Search social platforms and analyze content</p>
+                <p class="text-gray-700 mt-1">Step 3: Search social platforms and analyze content</p>
             </div>
             <div class="flex items-center space-x-2">
-                <div class="w-2 h-2 bg-green-600 rounded-full"></div>
-                <div class="w-2 h-2 bg-green-600 rounded-full"></div>
-                <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                <!-- Step 1: Completed -->
+                <div class="w-3 h-3 gradient-primary rounded-full glow-shadow flex items-center justify-center">
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                </div>
+                <!-- Step 2: Completed -->
+                <div class="w-3 h-3 gradient-primary rounded-full glow-shadow flex items-center justify-center">
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                </div>
+                <!-- Step 3: Active -->
+                <div class="w-4 h-4 gradient-primary rounded-full glow-shadow pulse-slow border-2 border-white"></div>
+                <!-- Step 4: Not started -->
                 <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
             </div>
         </div>
     </div>
 
     <!-- Search Parameters -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">Search Parameters</h2>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -52,7 +60,7 @@
     </div>
 
     <!-- Platform Search -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
         <div class="mb-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-2">Search Social Platforms</h2>
             <p class="text-sm text-gray-600">I'll search GoFundMe.com, X.com, Reddit.com, and other platforms using your keywords and phrases to find relevant conversations.</p>
@@ -95,21 +103,21 @@
             <div class="mb-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Search Results</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="glass rounded-lg border border-white/10 p-4">
                         <div class="flex items-center space-x-2 mb-2">
                             <span class="material-icons text-blue-600 text-sm">search</span>
                             <span class="text-sm font-medium text-gray-900">Total Posts Found</span>
                         </div>
                         <p class="text-2xl font-bold text-gray-900" id="total-posts">0</p>
                     </div>
-                    <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="glass rounded-lg border border-white/10 p-4">
                         <div class="flex items-center space-x-2 mb-2">
                             <span class="material-icons text-green-600 text-sm">filter_list</span>
                             <span class="text-sm font-medium text-gray-900">Relevant Posts</span>
                         </div>
                         <p class="text-2xl font-bold text-gray-900" id="relevant-posts">0</p>
                     </div>
-                    <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="glass rounded-lg border border-white/10 p-4">
                         <div class="flex items-center space-x-2 mb-2">
                             <span class="material-icons text-purple-600 text-sm">people</span>
                             <span class="text-sm font-medium text-gray-900">Unique Authors</span>

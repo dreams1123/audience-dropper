@@ -12,9 +12,15 @@
                 <p class="text-gray-700 mt-1">Step 2: Generate phrases based on your keywords</p>
             </div>
             <div class="flex items-center space-x-2">
-                <div class="w-2 h-2 gradient-secondary rounded-full glow-shadow"></div>
-                <div class="w-2 h-2 gradient-primary rounded-full glow-shadow pulse-slow"></div>
+                <!-- Step 1: Completed -->
+                <div class="w-3 h-3 gradient-primary rounded-full glow-shadow flex items-center justify-center">
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                </div>
+                <!-- Step 2: Active -->
+                <div class="w-4 h-4 gradient-primary rounded-full glow-shadow pulse-slow border-2 border-white"></div>
+                <!-- Step 3: Not started -->
                 <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+                <!-- Step 4: Not started -->
                 <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
             </div>
         </div>
@@ -29,7 +35,7 @@
         </h2>
         <div class="flex flex-wrap gap-2 mb-6">
             {% for keyword in keywords %}
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm gradient-primary text-white hover-glow transition duration-300 cursor-pointer">
                 {{ keyword }}
             </span>
             {% else %}
@@ -40,18 +46,18 @@
 
     <!-- Existing Phrases (if any) -->
     {% if phrases and phrases|length > 0 %}
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6 mb-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">Your Generated Phrases 
             <span class="text-sm text-gray-600 font-normal">({{ phrases|length }} phrases)</span>
         </h2>
         <div id="existing-phrases-list" class="space-y-3 mb-6">
             {% for phrase in phrases %}
-            <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span class="text-xs font-medium text-blue-600">{{ loop.index }}</span>
+            <div class="flex items-center space-x-3 p-3 glass rounded-lg hover-lift transition duration-300">
+                <div class="w-6 h-6 gradient-secondary rounded-full flex items-center justify-center flex-shrink-0 glow-shadow">
+                    <span class="text-xs font-medium text-white">{{ loop.index }}</span>
                 </div>
                 <p class="text-sm text-gray-900 flex-1">{{ phrase }}</p>
-                <button class="text-blue-600 hover:text-blue-800" onclick="editPhrase(this)">
+                <button class="text-blue-600 hover:text-blue-800 hover-glow transition duration-200" onclick="editPhrase(this)">
                     <span class="material-icons text-sm">edit</span>
                 </button>
             </div>
@@ -64,11 +70,11 @@
             </div>
             <div class="flex space-x-3">
                 <button id="regenerate-phrases" 
-                        class="border-2 border-blue-500 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg font-medium transition duration-200">
+                        class="glass hover-glow text-gray-700 hover:text-blue-600 px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift border border-white/20">
                     Regenerate Phrases
                 </button>
                 <a href="{% if audience_id %}{{ url_for('audiences.create_audience_step3', audience_id=audience_id) }}{% else %}{{ url_for('audiences.create_audience_step3') }}{% endif %}" 
-                   class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
+                   class="gradient-primary hover-glow text-white px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow">
                     Continue to Step 3
                 </a>
             </div>
@@ -77,7 +83,7 @@
     {% endif %}
 
     <!-- Phrase Generation -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6" {% if phrases and phrases|length > 0 %}style="display: none;"{% endif %}>
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6" {% if phrases and phrases|length > 0 %}style="display: none;"{% endif %}>
         <div class="mb-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-2">Generate Phrases</h2>
             <p class="text-sm text-gray-600">Based on your keywords, I'll generate 10 phrases that people might use when talking about your topic online.</p>
@@ -85,7 +91,7 @@
 
         <div class="mb-6">
             <button id="generate-phrases" 
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200 flex items-center">
+                    class="gradient-primary hover-glow text-white px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow flex items-center">
                 <span class="material-icons mr-2">auto_awesome</span>
                 Generate Phrases
             </button>
@@ -94,7 +100,7 @@
         <!-- Loading State -->
         <div id="loading-state" class="hidden">
             <div class="flex items-center space-x-3">
-                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                <div class="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-blue-600"></div>
                 <p class="text-gray-600">Generating phrases based on your keywords...</p>
             </div>
         </div>
@@ -121,10 +127,10 @@
     <!-- Navigation -->
     <div class="flex justify-between">
         <a href="{% if audience_id %}{{ url_for('audiences.create_audience_step1', audience_id=audience_id) }}{% else %}{{ url_for('audiences.create_audience_step1') }}{% endif %}" 
-           class="text-gray-600 hover:text-gray-800 font-medium">
+           class="glass hover-glow text-gray-700 hover:text-blue-600 px-4 py-2 rounded-lg font-medium transition duration-300 hover-lift border border-white/20">
             ← Back to Step 1
         </a>
-        <div class="text-sm text-gray-500">
+        <div class="glass px-4 py-2 rounded-lg text-sm text-gray-600 border border-white/20">
             Step 2 of 4
         </div>
     </div>
@@ -203,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         phrases.forEach((phrase, index) => {
             const phraseDiv = document.createElement('div');
-            phraseDiv.className = 'flex items-center space-x-3 p-3 bg-gray-50 rounded-lg';
+            phraseDiv.className = 'flex items-center space-x-3 p-3 glass rounded-lg border border-white/10';
             phraseDiv.innerHTML = `
                 <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                     <span class="text-xs font-medium text-blue-600">${index + 1}</span>

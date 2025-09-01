@@ -5,14 +5,14 @@
 {% block content %}
 <div class="space-y-8">
     <!-- Header -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div>
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-900">My Audiences</h1>
                 <p class="text-gray-600 mt-1">Manage and monitor your target audiences.</p>
             </div>
             <a href="{{ url_for('audiences.create_audience_step1') }}" 
-               class="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition duration-200 flex items-center justify-center sm:justify-start">
+               class="gradient-primary hover-glow text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow flex items-center justify-center sm:justify-start">
                 <span class="material-icons mr-2 text-sm sm:text-base">add</span>
                 <span class="text-sm sm:text-base">Create Audience</span>
             </a>
@@ -21,10 +21,10 @@
 
     <!-- Stats Overview -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
             <div class="flex items-center">
-                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <span class="material-icons text-blue-600 text-lg">group</span>
+                <div class="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center glow-shadow">
+                    <span class="material-icons text-white text-lg">group</span>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Total Audiences</p>
@@ -33,10 +33,10 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
             <div class="flex items-center">
-                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                    <span class="material-icons text-green-600 text-lg">check_circle</span>
+                <div class="w-8 h-8 gradient-secondary rounded-lg flex items-center justify-center glow-shadow">
+                    <span class="material-icons text-white text-lg">check_circle</span>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Active</p>
@@ -45,10 +45,10 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
             <div class="flex items-center">
-                <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <span class="material-icons text-yellow-600 text-lg">pause</span>
+                <div class="w-8 h-8 gradient-accent rounded-lg flex items-center justify-center glow-shadow">
+                    <span class="material-icons text-white text-lg">pause</span>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Paused</p>
@@ -57,10 +57,10 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
             <div class="flex items-center">
-                <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <span class="material-icons text-purple-600 text-lg">visibility</span>
+                <div class="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center glow-shadow">
+                    <span class="material-icons text-white text-lg">visibility</span>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Total Reach</p>
@@ -71,7 +71,7 @@
     </div>
 
     <!-- Search and Filters -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
             <div class="flex-1 max-w-md">
                 <div class="relative">
@@ -79,19 +79,19 @@
                         search
                     </span>
                     <input type="text" placeholder="Search audiences..." 
-                           class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                           class="w-full pl-10 pr-3 py-2 glass border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
             </div>
             
             <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                <select class="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <select class="w-full sm:w-auto px-3 py-2 glass border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     <option>All Status</option>
                     <option>Active</option>
                     <option>Paused</option>
                     <option>Draft</option>
                 </select>
                 
-                <select class="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <select class="w-full sm:w-auto px-3 py-2 glass border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     <option>Sort by: Name</option>
                     <option>Date Created</option>
                     <option>Size</option>
@@ -104,7 +104,7 @@
     <!-- Audiences Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {% for audience in audiences %}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover-lift">
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 hover-lift">
             <div class="flex items-start justify-between mb-4">
                 <div class="flex-1">
                     <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ audience.name }}</h3>
@@ -112,9 +112,9 @@
                 </div>
                 <div class="ml-4">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                 {% if audience.status == 'active' %}bg-green-100 text-green-800
-                                 {% elif audience.status == 'paused' %}bg-yellow-100 text-yellow-800
-                                 {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                 {% if audience.status == 'active' %}gradient-secondary text-white
+                                 {% elif audience.status == 'paused' %}gradient-accent text-white
+                                 {% else %}glass border border-white/20 text-gray-700{% endif %} glow-shadow">
                         {{ audience.status.title() }}
                     </span>
                 </div>
@@ -149,25 +149,25 @@
                 {% endif %}
             </div>
             
-            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+            <div class="flex items-center justify-between pt-4 border-t border-white/20">
                 <div class="flex space-x-2">
                     {% if audience.type == 'conversation' %}
                     <a href="{{ url_for('audiences.audience_details', audience_id=audience._id) }}" 
-                       class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                       class="gradient-primary hover-glow text-white px-3 py-1 rounded-lg text-sm font-medium transition duration-300">
                         View Details
                     </a>
                     {% else %}
-                    <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    <button class="gradient-primary hover-glow text-white px-3 py-1 rounded-lg text-sm font-medium transition duration-300">
                         View Details
                     </button>
                     {% endif %}
-                    <button class="text-gray-600 hover:text-gray-800 text-sm font-medium">
+                    <button class="glass hover-glow text-gray-700 hover:text-blue-600 px-3 py-1 rounded-lg text-sm font-medium transition duration-300 border border-white/20">
                         Edit
                     </button>
                 </div>
                 <div class="flex items-center space-x-2">
                     {% if audience.type == 'conversation' %}
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium gradient-accent text-white glow-shadow">
                         AI Generated
                     </span>
                     {% endif %}
@@ -179,14 +179,14 @@
         </div>
         {% else %}
         <!-- Empty State -->
-        <div class="col-span-full bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="material-icons text-gray-400 text-2xl">group</span>
+        <div class="col-span-full glass card-shadow-lg rounded-xl border border-white/20 p-12 text-center">
+            <div class="w-16 h-16 glass rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20">
+                <span class="material-icons text-gray-600 text-2xl">group</span>
             </div>
             <h3 class="text-lg font-medium text-gray-900 mb-2">No audiences yet</h3>
             <p class="text-gray-600 mb-6">Create your first audience to get started with targeted campaigns.</p>
             <a href="{{ url_for('audiences.create_audience_step1') }}" 
-               class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200 inline-flex items-center">
+               class="gradient-primary hover-glow text-white px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow inline-flex items-center">
                 <span class="material-icons mr-2">add</span>
                 Create Your First Audience
             </a>

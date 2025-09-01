@@ -212,11 +212,73 @@
         
         /* Dropdown improvements */
         .group:hover .group-hover\:opacity-100 {
-            opacity: 1;
+            opacity: 1 !important;
         }
         
         .group:hover .group-hover\:visible {
-            visibility: visible;
+            visibility: visible !important;
+        }
+        
+        /* Enhanced dropdown styling */
+        .dropdown-menu {
+            z-index: 999999 !important;
+            position: absolute !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+            transform: translateZ(0) !important;
+            will-change: transform !important;
+        }
+        
+        /* Force dropdown container to be on top */
+        #user-dropdown {
+            position: relative !important;
+            z-index: 999999 !important;
+        }
+        
+        /* Ensure all dropdown elements are on top */
+        .dropdown-menu * {
+            z-index: inherit !important;
+        }
+        
+        /* Ensure navbar has proper z-index */
+        nav {
+            z-index: 999998 !important;
+            position: relative !important;
+        }
+        
+        /* Override any conflicting z-index values */
+        .relative {
+            z-index: auto !important;
+        }
+        
+        .relative#user-dropdown {
+            z-index: 999999 !important;
+        }
+        
+        /* Create a new stacking context for the dropdown */
+        .dropdown-menu {
+            isolation: isolate !important;
+        }
+        
+        /* Override any body or html z-index that might interfere */
+        body, html {
+            z-index: auto !important;
+        }
+        
+        /* Active navigation styling */
+        .nav-link-active {
+            background: linear-gradient(45deg, #667eea, #764ba2) !important;
+            color: white !important;
+            box-shadow: 0 4px 15px 0 rgba(102, 126, 234, 0.3) !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        .nav-link-active:hover {
+            background: linear-gradient(45deg, #5a6fd8, #6a4190) !important;
+            color: white !important;
+            box-shadow: 0 6px 20px 0 rgba(102, 126, 234, 0.4) !important;
         }
         
         /* Ensure dropdown is above other elements */
@@ -275,19 +337,21 @@
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center space-x-4">
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('main.dashboard') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
-                        <a href="{{ url_for('audiences.audiences') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Audiences</a>
+                        <a href="{{ url_for('main.dashboard') }}" 
+                           class="{% if request.endpoint == 'main.dashboard' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} px-3 py-2 rounded-md text-sm font-medium transition duration-300">Dashboard</a>
+                        <a href="{{ url_for('audiences.audiences') }}" 
+                           class="{% if request.endpoint and (request.endpoint.startswith('audiences.') or request.endpoint == 'audiences.audiences') %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} px-3 py-2 rounded-md text-sm font-medium transition duration-300">Audiences</a>
                         <div class="relative group" id="user-dropdown">
                             <button class="flex items-center space-x-1 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium focus:outline-none">
                                 <span class="material-icons text-sm">account_circle</span>
                                 <span class="hidden lg:inline">{{ current_user.name or current_user.email }}</span>
                                 <span class="material-icons text-sm">expand_more</span>
                             </button>
-                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border border-gray-200">
-                                <a href="{{ url_for('main.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150">Profile</a>
-                                <a href="{{ url_for('main.account') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150">Account</a>
-                                <hr class="my-1 border-gray-200">
-                                <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150">Sign Out</a>
+                            <div class="dropdown-menu absolute right-0 mt-2 w-48 glass rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border border-white/20" style="z-index: 999999 !important; position: absolute !important;">
+                                <a href="{{ url_for('main.profile') }}" class="block px-4 py-2 text-sm text-gray-800 hover:bg-white/20 hover:text-blue-600 rounded-md mx-2 transition-colors duration-150">Profile</a>
+                                <a href="{{ url_for('main.account') }}" class="block px-4 py-2 text-sm text-gray-800 hover:bg-white/20 hover:text-blue-600 rounded-md mx-2 transition-colors duration-150">Account</a>
+                                <hr class="my-1 border-white/20 mx-2">
+                                <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-sm text-gray-800 hover:bg-white/20 hover:text-blue-600 rounded-md mx-2 transition-colors duration-150">Sign Out</a>
                             </div>
                         </div>
                     {% else %}
@@ -298,7 +362,7 @@
 
                 <!-- Mobile menu button -->
                 <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-button" class="text-gray-700 hover:text-blue-600 p-2 rounded-md">
+                    <button id="mobile-menu-button" class="glass text-gray-700 hover:text-blue-600 p-2 rounded-md border border-white/20 hover-glow transition duration-300">
                         <span class="material-icons text-xl">menu</span>
                     </button>
                 </div>
@@ -306,12 +370,16 @@
 
             <!-- Mobile Navigation Menu -->
             <div id="mobile-menu" class="hidden md:hidden">
-                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-white/20">
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('main.dashboard') }}" class="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
-                        <a href="{{ url_for('audiences.audiences') }}" class="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Audiences</a>
-                        <a href="{{ url_for('main.profile') }}" class="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Profile</a>
-                        <a href="{{ url_for('main.account') }}" class="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Account</a>
+                        <a href="{{ url_for('main.dashboard') }}" 
+                           class="{% if request.endpoint == 'main.dashboard' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} block px-3 py-2 rounded-md text-base font-medium transition duration-300">Dashboard</a>
+                        <a href="{{ url_for('audiences.audiences') }}" 
+                           class="{% if request.endpoint and (request.endpoint.startswith('audiences.') or request.endpoint == 'audiences.audiences') %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} block px-3 py-2 rounded-md text-base font-medium transition duration-300">Audiences</a>
+                        <a href="{{ url_for('main.profile') }}" 
+                           class="{% if request.endpoint == 'main.profile' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} block px-3 py-2 rounded-md text-base font-medium transition duration-300">Profile</a>
+                        <a href="{{ url_for('main.account') }}" 
+                           class="{% if request.endpoint == 'main.account' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} block px-3 py-2 rounded-md text-base font-medium transition duration-300">Account</a>
                         <hr class="my-2">
                         <a href="{{ url_for('auth.logout') }}" class="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Sign Out</a>
                     {% else %}
@@ -328,7 +396,7 @@
         {% if messages %}
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
                 {% for category, message in messages %}
-                    <div class="mb-4 p-4 rounded-md {% if category == 'error' %}bg-red-50 border border-red-200 text-red-700{% else %}bg-green-50 border border-green-200 text-green-700{% endif %}">
+                    <div class="mb-4 p-4 rounded-md glass border border-white/20 {% if category == 'error' %}text-red-700{% else %}text-green-700{% endif %} card-shadow-lg">
                         <div class="flex">
                             <div class="flex-shrink-0">
                                 <span class="material-icons text-sm">
@@ -383,48 +451,17 @@
                 });
             }
             
-            // User dropdown functionality
+            // User dropdown functionality - Pure hover-based
             if (userDropdown && userDropdownMenu) {
-                let isDropdownOpen = false;
-                const dropdownButton = userDropdown.querySelector('button');
-                
-                // Toggle dropdown on button click only
-                dropdownButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    if (isDropdownOpen) {
-                        userDropdownMenu.classList.add('opacity-0', 'invisible');
-                        userDropdownMenu.classList.remove('opacity-100', 'visible');
-                    } else {
+                // Ensure dropdown works on hover
+                userDropdown.addEventListener('mouseenter', function() {
                         userDropdownMenu.classList.remove('opacity-0', 'invisible');
                         userDropdownMenu.classList.add('opacity-100', 'visible');
-                    }
-                    
-                    isDropdownOpen = !isDropdownOpen;
                 });
                 
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(event) {
-                    if (!userDropdown.contains(event.target)) {
+                userDropdown.addEventListener('mouseleave', function() {
                         userDropdownMenu.classList.add('opacity-0', 'invisible');
                         userDropdownMenu.classList.remove('opacity-100', 'visible');
-                        isDropdownOpen = false;
-                    }
-                });
-                
-                // Prevent dropdown from closing when clicking inside the menu
-                userDropdownMenu.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                });
-                
-                // Close dropdown when pressing Escape key
-                document.addEventListener('keydown', function(event) {
-                    if (event.key === 'Escape' && isDropdownOpen) {
-                        userDropdownMenu.classList.add('opacity-0', 'invisible');
-                        userDropdownMenu.classList.remove('opacity-100', 'visible');
-                        isDropdownOpen = false;
-                    }
                 });
             }
         });

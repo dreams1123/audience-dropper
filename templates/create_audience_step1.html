@@ -5,23 +5,27 @@
 {% block content %}
 <div class="max-w-4xl mx-auto space-y-8">
     <!-- Header -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div>
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Create New Audience</h1>
-                <p class="text-gray-600 mt-1">Step 1: Chat with our AI to define your target audience</p>
+                <p class="text-gray-700 mt-1">Step 1: Chat with our AI to define your target audience</p>
             </div>
             <div class="flex items-center space-x-2">
-                <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                <!-- Step 1: Active -->
+                <div class="w-4 h-4 gradient-primary rounded-full glow-shadow pulse-slow border-2 border-white"></div>
+                <!-- Step 2: Not started -->
                 <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+                <!-- Step 3: Not started -->
                 <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+                <!-- Step 4: Not started -->
                 <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
             </div>
         </div>
     </div>
 
     <!-- Chat Interface -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
         <div class="mb-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-2">AI Assistant</h2>
             <p class="text-sm text-gray-600">I'll ask you 5 questions to understand your target audience. Answer each question to get personalized keywords and insights.</p>
@@ -30,10 +34,10 @@
         <!-- Chat Messages -->
         <div id="chat-messages" class="space-y-4 mb-6 max-h-96 overflow-y-auto">
             <div class="flex items-start space-x-3">
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div class="w-8 h-8 gradient-primary rounded-full flex items-center justify-center flex-shrink-0 glow-shadow">
                     <span class="material-icons text-white text-sm">smart_toy</span>
                 </div>
-                <div class="bg-blue-50 rounded-lg p-3 max-w-3xl">
+                <div class="glass rounded-lg p-3 max-w-3xl border border-white/10">
                     <p class="text-sm text-gray-900">Hello! I'm here to help you identify your target audience. Let me ask you a few questions to understand your business and goals better.</p>
                 </div>
             </div>
@@ -42,15 +46,15 @@
         <!-- Thinking Indicator (Hidden by default) -->
         <div id="thinking-indicator" class="hidden mb-6">
             <div class="flex items-start space-x-3">
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div class="w-8 h-8 gradient-primary rounded-full flex items-center justify-center flex-shrink-0 glow-shadow">
                     <span class="material-icons text-white text-sm">smart_toy</span>
                 </div>
-                <div class="bg-blue-50 rounded-lg p-3 max-w-3xl">
+                <div class="glass rounded-lg p-3 max-w-3xl border border-white/10">
                     <div class="flex items-center space-x-2">
                         <div class="flex space-x-1">
-                            <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
-                            <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
-                            <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                            <div class="w-2 h-2 gradient-primary rounded-full animate-bounce"></div>
+                            <div class="w-2 h-2 gradient-primary rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+                            <div class="w-2 h-2 gradient-primary rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
                         </div>
                         <span class="text-sm text-gray-600">Thinking...</span>
                     </div>
@@ -61,19 +65,19 @@
         <!-- Input Area -->
         <div class="flex space-x-3">
             <input type="text" id="user-input" 
-                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   class="flex-1 px-4 py-2 glass border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                    placeholder="Type your answer here...">
             <button id="send-button" 
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition duration-200 flex items-center">
+                    class="gradient-primary hover-glow text-white px-6 py-2 rounded-lg font-medium transition duration-300 hover-lift glow-shadow flex items-center">
                 <span class="material-icons mr-1">send</span>
                 Send
             </button>
         </div>
 
         <!-- Step Navigation -->
-        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
+        <div class="flex justify-between items-center mt-4 pt-4 border-t border-white/20">
             <button id="previous-step" 
-                    class="text-gray-600 hover:text-gray-800 font-medium flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="glass hover-glow text-gray-700 hover:text-blue-600 px-4 py-2 rounded-lg font-medium transition duration-300 border border-white/20 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled>
                 <span class="material-icons mr-1 text-sm">arrow_back</span>
                 Previous Step
@@ -82,7 +86,7 @@
                 Question <span id="current-question">1</span> of 5
             </div>
             <button id="next-step" 
-                    class="text-blue-600 hover:text-blue-800 font-medium flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="gradient-primary hover-glow text-white px-4 py-2 rounded-lg font-medium transition duration-300 hover-lift glow-shadow flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled>
                 Next Step
                 <span class="material-icons ml-1 text-sm">arrow_forward</span>
@@ -95,7 +99,7 @@
 
 
         <!-- Generated Keywords -->
-        <div id="keywords-section" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
+        <div id="keywords-section" class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6 mb-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Generated Keywords</h3>
             <div id="keywords-list" class="flex flex-wrap gap-2 mb-4">
                 <!-- Keywords will be populated here -->
@@ -104,9 +108,9 @@
         </div>
 
         <!-- Summary -->
-        <div id="summary-section" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
+        <div id="summary-section" class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6 mb-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Audience Summary</h3>
-            <div id="audience-summary" class="bg-gray-50 rounded-lg p-4">
+            <div id="audience-summary" class="glass rounded-lg p-4 border border-white/10">
                 <!-- Summary will be populated here -->
             </div>
         </div>
@@ -118,12 +122,12 @@
             </div>
             <div class="flex space-x-3">
                 <button id="retry-button" 
-                        class="border-2 border-gray-300 hover:border-blue-500 text-gray-700 hover:text-blue-600 px-6 py-3 rounded-lg font-medium transition duration-200">
+                        class="glass hover-glow text-gray-700 hover:text-blue-600 px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift border border-white/20">
                     Try Again
                 </button>
                 <a id="next-button" 
                    href="#" 
-                   class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200 hidden">
+                   class="gradient-primary hover-glow text-white px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow hidden">
                     Continue to Step 2
                 </a>
             </div>
@@ -133,7 +137,7 @@
     <!-- Navigation -->
     <div class="flex justify-between">
         <a href="{{ url_for('audiences.audiences') }}" 
-           class="text-gray-600 hover:text-gray-800 font-medium">
+           class="glass hover-glow text-gray-700 hover:text-blue-600 px-4 py-2 rounded-lg font-medium transition duration-300 border border-white/20">
             ← Back to Audiences
         </a>
         <div class="text-sm text-gray-500">
@@ -187,8 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load saved conversation from database if available
     loadSavedConversation().then(() => {
         // Initial bot message - only add if no conversation history exists
-        if (conversationHistory.length === 0) {
-            addBotMessage(questions[0]);
+    if (conversationHistory.length === 0) {
+        addBotMessage(questions[0]);
             // Add the first question to conversation history
             conversationHistory.push({
                 role: 'assistant',
