@@ -206,10 +206,6 @@ python app.py
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 👨‍💻 Author
-
-**Luis Fernando**
-
 ## 🆘 Support
 
 If you encounter any issues or have questions:
