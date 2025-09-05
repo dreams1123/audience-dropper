@@ -24,3 +24,20 @@ def profile():
 def account():
     user_data = get_user_by_id(current_user.id)
     return render_template('account.html', user=user_data)
+
+@main_bp.route('/support')
+def support():
+    return render_template('support.html')
+
+@main_bp.route('/faq')
+def faq():
+    return render_template('faq.html')
+
+@main_bp.route('/instructions')
+def instructions():
+    return render_template('instructions.html')
+
+@main_bp.route('/map')
+@login_required
+def map():
+    return render_template('map.html')

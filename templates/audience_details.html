@@ -16,7 +16,7 @@
                    class="text-gray-600 hover:text-gray-800 font-medium">
                     ← Back to Audiences
                 </a>
-                <a href="{{ url_for('audiences.create_audience_step1') }}" 
+                <a href="{{ url_for('audiences.create_audience') }}" 
                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
                     Create New
                 </a>
@@ -116,10 +116,6 @@
                 <span class="material-icons mr-2 text-sm">download</span>
                 Export Data
             </button>
-            <a href="{{ url_for('audiences.create_audience_step2', audience_id=audience._id) }}" 
-               class="gradient-primary hover-glow text-white px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow">
-                Continue to Step 2
-            </a>
         </div>
     </div>
 </div>

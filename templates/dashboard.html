@@ -22,8 +22,8 @@
         <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 hover-lift">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <div class="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center glow-shadow">
-                        <span class="material-icons text-white text-lg">group</span>
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center glow-shadow">
+                        <img src="{{ url_for('static', filename='logo.png') }}" alt="Audience Dropper Logo" class="w-8 h-8">
                     </div>
                 </div>
                 <div class="ml-4">
@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Active Campaigns</p>
+                    <p class="text-sm font-medium text-gray-600">Completed Audiences</p>
                     <p class="text-2xl font-bold text-gray-900">5</p>
                 </div>
             </div>
@@ -66,7 +66,7 @@
     <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            <a href="{{ url_for('audiences.create_audience_step1') }}" class="glass hover-lift card-shadow p-4 rounded-lg transition duration-300 hover-glow border border-white/20">
+            <a href="{{ url_for('audiences.create_audience') }}" class="glass hover-lift card-shadow p-4 rounded-lg transition duration-300 hover-glow border border-white/20">
                 <div class="flex items-center">
                     <div class="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center glow-shadow">
                         <span class="material-icons text-white">add</span>

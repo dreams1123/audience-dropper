@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}FAQ - Audience Dropper{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Frequently Asked Questions</h1>
+                <p class="text-gray-600 mt-1">Find answers to common questions about Audience Dropper.</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center glow-shadow">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Audience Dropper Logo" class="w-12 h-12">
+            </div>
+        </div>
+    </div>
+
+    <!-- Search FAQ -->
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
+        <div class="relative">
+            <span class="material-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                search
+            </span>
+            <input type="text" placeholder="Search FAQ..." 
+                   class="w-full pl-10 pr-3 py-3 glass border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+    </div>
+
+    <!-- FAQ Categories -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Getting Started -->
+        <div class="space-y-6">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center">
+                <span class="material-icons mr-2 text-blue-600">play_circle</span>
+                Getting Started
+            </h2>
+            
+            <div class="space-y-4">
+                <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">What is Audience Dropper?</h3>
+                    <p class="text-gray-600 text-sm">Audience Dropper is an AI-powered platform that helps you create highly targeted audiences for your marketing campaigns through intelligent conversation and advanced search capabilities.</p>
+                </div>
+                
+                <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">How do I create my first audience?</h3>
+                    <p class="text-gray-600 text-sm">Click "Create Audience" and chat with our AI to define your target audience. The AI will ask questions about your ideal customers and generate targeted keywords automatically.</p>
+                </div>
+                
+                <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">Is there a free trial?</h3>
+                    <p class="text-gray-600 text-sm">Yes! You can create up to 3 audiences for free to test our platform. No credit card required.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audience Creation -->
+        <div class="space-y-6">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center">
+                <span class="material-icons mr-2 text-green-600">group_add</span>
+                Audience Creation
+            </h2>
+            
+            <div class="space-y-4">
+                <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">How does the AI audience creation work?</h3>
+                    <p class="text-gray-600 text-sm">Our AI asks you questions about your target audience and uses advanced algorithms to generate relevant keywords and search criteria for finding your ideal customers.</p>
+                </div>
+                
+                <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">Can I edit an audience after creation?</h3>
+                    <p class="text-gray-600 text-sm">Currently, audiences cannot be edited after creation. You'll need to create a new audience with updated criteria if you want to make changes.</p>
+                </div>
+                
+                <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">How long does audience creation take?</h3>
+                    <p class="text-gray-600 text-sm">The AI conversation typically takes 5-10 minutes. The actual search process can take several minutes to hours depending on the size and complexity of your audience.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search & Results -->
+        <div class="space-y-6">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center">
+                <span class="material-icons mr-2 text-purple-600">search</span>
+                Search & Results
+            </h2>
+            
+            <div class="space-y-4">
+                <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">How accurate are the search results?</h3>
+                    <p class="text-gray-600 text-sm">Our search engine uses advanced algorithms and multiple data sources to provide highly accurate and relevant results for your target audience.</p>
+                </div>
+                
+                <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">Why is my search taking so long?</h3>
+                    <p class="text-gray-600 text-sm">Large audience searches can take time to ensure accuracy. You can monitor progress in real-time on the audience details page.</p>
+                </div>
+                
+                <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">Can I export my audience data?</h3>
+                    <p class="text-gray-600 text-sm">Yes! Once your search is complete, you can download the results as a CSV file for use in your marketing campaigns.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account & Billing -->
+        <div class="space-y-6">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center">
+                <span class="material-icons mr-2 text-orange-600">account_circle</span>
+                Account & Billing
+            </h2>
+            
+            <div class="space-y-4">
+                <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">How do I upgrade my account?</h3>
+                    <p class="text-gray-600 text-sm">Go to your account settings and select a plan that fits your needs. You can upgrade or downgrade at any time.</p>
+                </div>
+                
+                <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">What payment methods do you accept?</h3>
+                    <p class="text-gray-600 text-sm">We accept all major credit cards, PayPal, and bank transfers for enterprise accounts.</p>
+                </div>
+                
+                <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">Can I cancel my subscription anytime?</h3>
+                    <p class="text-gray-600 text-sm">Yes, you can cancel your subscription at any time. You'll retain access to your account until the end of your billing period.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Still Need Help? -->
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 text-center">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Still Need Help?</h2>
+        <p class="text-gray-600 mb-6">Can't find the answer you're looking for? Our support team is here to help.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('main.support') }}" 
+               class="gradient-primary hover-glow text-white px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow inline-flex items-center">
+                <span class="material-icons mr-2">support</span>
+                Contact Support
+            </a>
+            <a href="{{ url_for('main.instructions') }}" 
+               class="gradient-secondary hover-glow text-white px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow inline-flex items-center">
+                <span class="material-icons mr-2">book</span>
+                View Instructions
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Support - Audience Dropper{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Support Center</h1>
+                <p class="text-gray-600 mt-1">Get help and support for Audience Dropper.</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center glow-shadow">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Audience Dropper Logo" class="w-12 h-12">
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Options -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Email Support -->
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 hover-lift">
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center glow-shadow">
+                    <span class="material-icons text-white">email</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 ml-3">Email Support</h3>
+            </div>
+            <p class="text-gray-600 mb-4">Get detailed help via email. We typically respond within 24 hours.</p>
+            <a href="mailto:support@audiencedropper.com" 
+               class="gradient-primary hover-glow text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center">
+                <span class="material-icons mr-2 text-sm">send</span>
+                Send Email
+            </a>
+        </div>
+
+        <!-- Live Chat -->
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 hover-lift">
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 gradient-secondary rounded-lg flex items-center justify-center glow-shadow">
+                    <span class="material-icons text-white">chat</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 ml-3">Live Chat</h3>
+            </div>
+            <p class="text-gray-600 mb-4">Chat with our support team in real-time during business hours.</p>
+            <button class="gradient-secondary hover-glow text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center">
+                <span class="material-icons mr-2 text-sm">chat_bubble</span>
+                Start Chat
+            </button>
+        </div>
+
+        <!-- Documentation -->
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 hover-lift">
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 gradient-accent rounded-lg flex items-center justify-center glow-shadow">
+                    <span class="material-icons text-white">description</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 ml-3">Documentation</h3>
+            </div>
+            <p class="text-gray-600 mb-4">Browse our comprehensive guides and tutorials.</p>
+            <a href="{{ url_for('main.instructions') }}" 
+               class="gradient-accent hover-glow text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center">
+                <span class="material-icons mr-2 text-sm">book</span>
+                View Docs
+            </a>
+        </div>
+    </div>
+
+    <!-- Common Issues -->
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-6">Common Issues & Solutions</h2>
+        
+        <div class="space-y-4">
+            <div class="border-l-4 border-blue-500 pl-4">
+                <h3 class="font-semibold text-gray-900">How do I create my first audience?</h3>
+                <p class="text-gray-600 mt-1">Use our AI-powered audience creation tool to define your target audience through a conversational interface.</p>
+            </div>
+            
+            <div class="border-l-4 border-green-500 pl-4">
+                <h3 class="font-semibold text-gray-900">Why is my audience search taking so long?</h3>
+                <p class="text-gray-600 mt-1">Large audience searches can take several minutes. You can monitor progress in the audience details page.</p>
+            </div>
+            
+            <div class="border-l-4 border-purple-500 pl-4">
+                <h3 class="font-semibold text-gray-900">How do I export my audience data?</h3>
+                <p class="text-gray-600 mt-1">Once your audience search is complete, you can download the results as a CSV file from the audience details page.</p>
+            </div>
+            
+            <div class="border-l-4 border-orange-500 pl-4">
+                <h3 class="font-semibold text-gray-900">Can I edit an audience after creation?</h3>
+                <p class="text-gray-600 mt-1">Currently, audiences cannot be edited after creation. You'll need to create a new audience with updated criteria.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+        
+        <form class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                    <input type="text" 
+                           class="w-full px-3 py-2 glass border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="Your name">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" 
+                           class="w-full px-3 py-2 glass border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="your@email.com">
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                <input type="text" 
+                       class="w-full px-3 py-2 glass border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                       placeholder="What can we help you with?">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                <textarea rows="4" 
+                          class="w-full px-3 py-2 glass border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Describe your issue or question in detail..."></textarea>
+            </div>
+            
+            <button type="submit" 
+                    class="gradient-primary hover-glow text-white px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow inline-flex items-center">
+                <span class="material-icons mr-2">send</span>
+                Send Message
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

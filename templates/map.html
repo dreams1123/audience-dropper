@@ -1,0 +1,575 @@
+{% extends "base.html" %}
+
+{% block title %}Location Targeting - Audience Dropper{% endblock %}
+
+{% block head %}
+    {% if config.GOOGLE_MAPS_API_KEY %}
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ config.GOOGLE_MAPS_API_KEY }}&libraries=places,geometry&callback=initMap" async defer></script>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Location Targeting</h1>
+                <p class="text-gray-700 mt-1">Select locations on the map to target your audience</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button id="save-locations" 
+                        class="gradient-primary hover-glow text-white px-4 py-2 rounded-lg font-medium transition duration-300 glow-shadow">
+                    <span class="material-icons text-sm mr-2">save</span>
+                    Save Locations
+                </button>
+                <a href="{{ url_for('audiences.create_audience') }}" 
+                   class="gradient-secondary hover-glow text-white px-4 py-2 rounded-lg font-medium transition duration-300 glow-shadow">
+                    <span class="material-icons text-sm mr-2">arrow_back</span>
+                    Back to Create
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map and Controls -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Map Container -->
+        <div class="lg:col-span-3">
+            <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Interactive Map</h2>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-gray-600">Selected:</span>
+                        <span id="location-count" class="text-sm font-medium text-blue-600">0 locations</span>
+                    </div>
+                </div>
+                
+                <!-- Google Map -->
+                <div id="map" class="w-full h-[600px] rounded-lg overflow-hidden border border-white/20 relative">
+                    {% if not config.GOOGLE_MAPS_API_KEY %}
+                    <div class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                        <div class="text-center p-8">
+                            <span class="material-icons text-6xl text-gray-400 mb-4">map</span>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-2">Google Maps API Key Required</h3>
+                            <p class="text-gray-600 mb-4">Please add your Google Maps API key to the environment variables to enable the interactive map.</p>
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-left">
+                                <p class="text-sm text-yellow-800">
+                                    <strong>Setup Instructions:</strong><br>
+                                    1. Get a Google Maps API key from <a href="https://console.cloud.google.com/" target="_blank" class="text-blue-600 underline">Google Cloud Console</a><br>
+                                    2. Add <code>GOOGLE_MAPS_API_KEY=your-api-key</code> to your .env file<br>
+                                    3. Restart the application
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Map Controls -->
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <button id="clear-all" 
+                            class="glass hover-glow text-gray-700 hover:text-red-600 px-3 py-2 rounded-lg text-sm font-medium transition duration-300 border border-white/20">
+                        <span class="material-icons text-sm mr-1">clear_all</span>
+                        Clear All
+                    </button>
+                    <button id="search-location" 
+                            class="glass hover-glow text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition duration-300 border border-white/20">
+                        <span class="material-icons text-sm mr-1">search</span>
+                        Search Location
+                    </button>
+                    <button id="current-location" 
+                            class="glass hover-glow text-gray-700 hover:text-green-600 px-3 py-2 rounded-lg text-sm font-medium transition duration-300 border border-white/20">
+                        <span class="material-icons text-sm mr-1">my_location</span>
+                        My Location
+                    </button>
+                    <button id="toggle-satellite" 
+                            class="glass hover-glow text-gray-700 hover:text-purple-600 px-3 py-2 rounded-lg text-sm font-medium transition duration-300 border border-white/20">
+                        <span class="material-icons text-sm mr-1">satellite</span>
+                        Satellite View
+                    </button>
+                    <button id="draw-polygon" 
+                            class="glass hover-glow text-gray-700 hover:text-orange-600 px-3 py-2 rounded-lg text-sm font-medium transition duration-300 border border-white/20">
+                        <span class="material-icons text-sm mr-1">gesture</span>
+                        Draw Area
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1">
+            <!-- Search Box -->
+            <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Search Locations</h3>
+                <div class="relative">
+                    <input type="text" id="search-input" placeholder="Search for a location..."
+                           class="w-full px-3 py-2 glass border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                    <button id="search-btn" 
+                            class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600">
+                        <span class="material-icons text-sm">search</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Map Type Selection -->
+            <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Map Type</h3>
+                <div class="space-y-2">
+                    <button id="map-type-roadmap" class="w-full text-left px-3 py-2 glass rounded-lg hover:bg-white/20 transition duration-200 text-sm">
+                        <span class="material-icons text-sm mr-2">map</span>
+                        Road Map
+                    </button>
+                    <button id="map-type-satellite" class="w-full text-left px-3 py-2 glass rounded-lg hover:bg-white/20 transition duration-200 text-sm">
+                        <span class="material-icons text-sm mr-2">satellite</span>
+                        Satellite
+                    </button>
+                    <button id="map-type-hybrid" class="w-full text-left px-3 py-2 glass rounded-lg hover:bg-white/20 transition duration-200 text-sm">
+                        <span class="material-icons text-sm mr-2">layers</span>
+                        Hybrid
+                    </button>
+                    <button id="map-type-terrain" class="w-full text-left px-3 py-2 glass rounded-lg hover:bg-white/20 transition duration-200 text-sm">
+                        <span class="material-icons text-sm mr-2">terrain</span>
+                        Terrain
+                    </button>
+                </div>
+            </div>
+
+            <!-- Selected Locations -->
+            <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Selected Locations</h3>
+                <div id="selected-locations" class="space-y-2 max-h-96 overflow-y-auto">
+                    <div class="text-center text-gray-500 text-sm py-8">
+                        <span class="material-icons text-4xl mb-2 block">place</span>
+                        <p>Click on the map to add locations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Google Maps Implementation -->
+<script>
+let map;
+let markers = [];
+let selectedLocations = [];
+let drawingManager;
+let polygons = [];
+let isDrawingMode = false;
+let autocomplete;
+let geocoder;
+let currentMapType = 'roadmap';
+
+// Initialize Google Maps
+function initMap() {
+    {% if config.GOOGLE_MAPS_API_KEY %}
+    // Default center (New York City)
+    const defaultCenter = { lat: 40.7128, lng: -74.0060 };
+    
+    // Map options
+    const mapOptions = {
+        zoom: 10,
+        center: defaultCenter,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+        zoomControl: true,
+        zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_TOP
+        },
+        styles: [
+            {
+                featureType: "poi",
+                elementType: "labels",
+                stylers: [{ visibility: "off" }]
+            }
+        ]
+    };
+    
+    // Create map
+    map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    
+    // Initialize services
+    geocoder = new google.maps.Geocoder();
+    
+    // Initialize autocomplete
+    const searchInput = document.getElementById('search-input');
+    autocomplete = new google.maps.places.Autocomplete(searchInput);
+    autocomplete.bindTo('bounds', map);
+    
+    // Add click listener to map
+    map.addListener('click', function(event) {
+        if (!isDrawingMode) {
+            addLocationMarker(event.latLng);
+        }
+    });
+    
+    // Initialize drawing manager
+    drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: null,
+        drawingControl: false,
+        markerOptions: {
+            icon: {
+                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                    <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16" cy="16" r="12" fill="#667eea" stroke="#ffffff" stroke-width="3"/>
+                        <circle cx="16" cy="16" r="6" fill="#ffffff"/>
+                    </svg>
+                `),
+                scaledSize: new google.maps.Size(32, 32),
+                anchor: new google.maps.Point(16, 16)
+            }
+        },
+        polygonOptions: {
+            fillColor: '#667eea',
+            fillOpacity: 0.3,
+            strokeColor: '#667eea',
+            strokeOpacity: 0.8,
+            strokeWeight: 2
+        }
+    });
+    
+    drawingManager.setMap(map);
+    
+    // Listen for polygon completion
+    drawingManager.addListener('polygoncomplete', function(polygon) {
+        polygons.push(polygon);
+        updateLocationCount();
+    });
+    
+    // Initialize event listeners
+    initEventListeners();
+    
+    console.log('Google Maps initialized successfully');
+    {% else %}
+    console.log('Google Maps API key not configured');
+    {% endif %}
+}
+
+// Initialize event listeners
+function initEventListeners() {
+    // Search functionality
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
+    
+    autocomplete.addListener('place_changed', function() {
+        const place = autocomplete.getPlace();
+        if (place.geometry) {
+            map.setCenter(place.geometry.location);
+            map.setZoom(15);
+            addLocationMarker(place.geometry.location);
+            searchInput.value = '';
+        }
+    });
+    
+    searchBtn.addEventListener('click', function() {
+        const query = searchInput.value.trim();
+        if (query) {
+            geocoder.geocode({ address: query }, function(results, status) {
+                if (status === 'OK' && results[0]) {
+                    map.setCenter(results[0].geometry.location);
+                    map.setZoom(15);
+                    addLocationMarker(results[0].geometry.location);
+                    searchInput.value = '';
+                } else {
+                    alert('Location not found. Please try a different search term.');
+                }
+            });
+        }
+    });
+    
+    // Current location
+    document.getElementById('current-location').addEventListener('click', function() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const location = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                map.setCenter(location);
+                map.setZoom(15);
+                addLocationMarker(new google.maps.LatLng(location.lat, location.lng));
+            }, function() {
+                alert('Unable to get your current location. Please check your browser permissions.');
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    });
+    
+    // Clear all
+    document.getElementById('clear-all').addEventListener('click', function() {
+        clearAllLocations();
+    });
+    
+    // Toggle satellite view
+    document.getElementById('toggle-satellite').addEventListener('click', function() {
+        toggleMapType();
+    });
+    
+    // Draw polygon
+    document.getElementById('draw-polygon').addEventListener('click', function() {
+        toggleDrawingMode();
+    });
+    
+    // Map type buttons
+    document.getElementById('map-type-roadmap').addEventListener('click', function() {
+        setMapType('roadmap');
+    });
+    document.getElementById('map-type-satellite').addEventListener('click', function() {
+        setMapType('satellite');
+    });
+    document.getElementById('map-type-hybrid').addEventListener('click', function() {
+        setMapType('hybrid');
+    });
+    document.getElementById('map-type-terrain').addEventListener('click', function() {
+        setMapType('terrain');
+    });
+    
+    // Save locations
+    document.getElementById('save-locations').addEventListener('click', function() {
+        saveLocations();
+    });
+}
+
+// Add location marker
+function addLocationMarker(location) {
+    const marker = new google.maps.Marker({
+        position: location,
+        map: map,
+        title: 'Selected Location',
+        icon: {
+            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="16" cy="16" r="12" fill="#667eea" stroke="#ffffff" stroke-width="3"/>
+                    <circle cx="16" cy="16" r="6" fill="#ffffff"/>
+                </svg>
+            `),
+            scaledSize: new google.maps.Size(32, 32),
+            anchor: new google.maps.Point(16, 16)
+        }
+    });
+    
+    // Get location name using reverse geocoding
+    geocoder.geocode({ location: location }, function(results, status) {
+        let locationName = 'Unknown Location';
+        if (status === 'OK' && results[0]) {
+            locationName = results[0].formatted_address;
+        }
+        
+        const locationData = {
+            lat: location.lat(),
+            lng: location.lng(),
+            name: locationName,
+            marker: marker
+        };
+        
+        selectedLocations.push(locationData);
+        markers.push(marker);
+        updateLocationList();
+        updateLocationCount();
+        
+        // Add click listener to marker for removal
+        marker.addListener('click', function() {
+            removeLocation(locationData);
+        });
+    });
+}
+
+// Remove location
+function removeLocation(locationData) {
+    const index = selectedLocations.indexOf(locationData);
+    if (index > -1) {
+        selectedLocations.splice(index, 1);
+        markers.splice(index, 1);
+        locationData.marker.setMap(null);
+        updateLocationList();
+        updateLocationCount();
+    }
+}
+
+// Update location list
+function updateLocationList() {
+    const container = document.getElementById('selected-locations');
+    
+    if (selectedLocations.length === 0 && polygons.length === 0) {
+        container.innerHTML = `
+            <div class="text-center text-gray-500 text-sm py-8">
+                <span class="material-icons text-4xl mb-2 block">place</span>
+                <p>Click on the map to add locations</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    
+    // Add point locations
+    selectedLocations.forEach((location, index) => {
+        html += `
+            <div class="flex items-start justify-between p-3 glass rounded-lg border border-white/20 mb-2">
+                <div class="flex-1">
+                    <div class="flex items-center mb-1">
+                        <span class="material-icons text-blue-600 text-sm mr-2">place</span>
+                        <span class="text-sm font-medium text-gray-900">Point ${index + 1}</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mb-1">${location.name}</p>
+                    <p class="text-xs text-gray-500">${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}</p>
+                </div>
+                <button onclick="removeLocation(selectedLocations[${index}])" class="text-red-500 hover:text-red-700 ml-2">
+                    <span class="material-icons text-sm">close</span>
+                </button>
+            </div>
+        `;
+    });
+    
+    // Add polygon areas
+    polygons.forEach((polygon, index) => {
+        html += `
+            <div class="flex items-start justify-between p-3 glass rounded-lg border border-white/20 mb-2">
+                <div class="flex-1">
+                    <div class="flex items-center mb-1">
+                        <span class="material-icons text-green-600 text-sm mr-2">gesture</span>
+                        <span class="text-sm font-medium text-gray-900">Area ${index + 1}</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mb-1">Custom drawn area</p>
+                    <p class="text-xs text-gray-500">Polygon with ${polygon.getPath().getLength()} points</p>
+                </div>
+                <button onclick="removePolygon(${index})" class="text-red-500 hover:text-red-700 ml-2">
+                    <span class="material-icons text-sm">close</span>
+                </button>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+// Remove polygon
+function removePolygon(index) {
+    if (polygons[index]) {
+        polygons[index].setMap(null);
+        polygons.splice(index, 1);
+        updateLocationList();
+        updateLocationCount();
+    }
+}
+
+// Update location count
+function updateLocationCount() {
+    const totalCount = selectedLocations.length + polygons.length;
+    document.getElementById('location-count').textContent = `${totalCount} location${totalCount !== 1 ? 's' : ''}`;
+}
+
+// Clear all locations
+function clearAllLocations() {
+    // Clear markers
+    selectedLocations.forEach(location => {
+        location.marker.setMap(null);
+    });
+    selectedLocations = [];
+    markers = [];
+    
+    // Clear polygons
+    polygons.forEach(polygon => {
+        polygon.setMap(null);
+    });
+    polygons = [];
+    
+    updateLocationList();
+    updateLocationCount();
+}
+
+// Toggle map type
+function toggleMapType() {
+    const currentType = map.getMapTypeId();
+    if (currentType === google.maps.MapTypeId.ROADMAP) {
+        map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+        currentMapType = 'satellite';
+    } else {
+        map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+        currentMapType = 'roadmap';
+    }
+}
+
+// Set map type
+function setMapType(type) {
+    switch(type) {
+        case 'roadmap':
+            map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+            break;
+        case 'satellite':
+            map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+            break;
+        case 'hybrid':
+            map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+            break;
+        case 'terrain':
+            map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+            break;
+    }
+    currentMapType = type;
+}
+
+// Toggle drawing mode
+function toggleDrawingMode() {
+    isDrawingMode = !isDrawingMode;
+    const button = document.getElementById('draw-polygon');
+    
+    if (isDrawingMode) {
+        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+        button.classList.add('bg-orange-500', 'text-white');
+        button.classList.remove('text-gray-700');
+    } else {
+        drawingManager.setDrawingMode(null);
+        button.classList.remove('bg-orange-500', 'text-white');
+        button.classList.add('text-gray-700');
+    }
+}
+
+// Save locations
+function saveLocations() {
+    if (selectedLocations.length === 0 && polygons.length === 0) {
+        alert('Please select at least one location before saving.');
+        return;
+    }
+    
+    const locationData = {
+        points: selectedLocations.map(loc => ({
+            lat: loc.lat,
+            lng: loc.lng,
+            name: loc.name
+        })),
+        polygons: polygons.map(polygon => ({
+            paths: polygon.getPath().getArray().map(point => ({
+                lat: point.lat(),
+                lng: point.lng()
+            }))
+        }))
+    };
+    
+    // Store locations in sessionStorage
+    sessionStorage.setItem('selectedLocations', JSON.stringify(locationData));
+    
+    // Show success message
+    alert(`Successfully saved ${selectedLocations.length} point(s) and ${polygons.length} area(s).`);
+    
+    // Redirect back to create audience page
+    window.location.href = "{{ url_for('audiences.create_audience') }}";
+}
+
+// Make functions globally available
+window.removeLocation = removeLocation;
+window.removePolygon = removePolygon;
+
+// Initialize when DOM is loaded (fallback if Google Maps doesn't load)
+document.addEventListener('DOMContentLoaded', function() {
+    // If Google Maps API key is not configured, show fallback message
+    {% if not config.GOOGLE_MAPS_API_KEY %}
+    console.log('Google Maps API key not configured - showing fallback UI');
+    {% endif %}
+});
+</script>
+{% endblock %}

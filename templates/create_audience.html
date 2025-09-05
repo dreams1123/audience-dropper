@@ -3,237 +3,354 @@
 {% block title %}Create Audience - Audience Dropper{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto space-y-8">
+<div class="space-y-6">
     <!-- Header -->
     <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div>
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Create New Audience</h1>
-                <p class="text-gray-600 mt-1">Build a targeted audience for your campaigns.</p>
+                <p class="text-gray-700 mt-1">Use AI chat, location targeting, and file uploads to build your perfect audience</p>
             </div>
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <span class="material-icons text-white text-lg sm:text-xl">add</span>
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center glow-shadow">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Audience Dropper Logo" class="w-12 h-12">
             </div>
         </div>
     </div>
 
-    <!-- Create Form -->
-    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
-        <form method="POST" class="space-y-8">
-            <!-- Basic Information -->
-            <div>
-                <h2 class="text-lg font-semibold text-gray-900 mb-6">Basic Information</h2>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                            Audience Name *
-                        </label>
-                        <input type="text" id="name" name="name" required
-                               class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                               placeholder="e.g., Tech Professionals, E-commerce Buyers">
+    <!-- Four Section Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-[600px]">
+        
+        <!-- Top Left: Chatbot Area -->
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 flex flex-col">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center glow-shadow mr-3">
+                    <span class="material-icons text-white text-sm">chat</span>
+                </div>
+                <h2 class="text-lg font-semibold text-gray-900">AI Assistant</h2>
                     </div>
                     
-                    <div>
-                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
-                            Category
-                        </label>
-                        <select id="category" name="category"
-                                class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Select a category</option>
-                            <option value="business">Business & Professional</option>
-                            <option value="ecommerce">E-commerce & Retail</option>
-                            <option value="technology">Technology</option>
-                            <option value="health">Health & Wellness</option>
-                            <option value="education">Education</option>
-                            <option value="entertainment">Entertainment</option>
-                            <option value="finance">Finance & Banking</option>
-                            <option value="travel">Travel & Tourism</option>
-                            <option value="other">Other</option>
-                        </select>
+            <!-- Chat Messages -->
+            <div id="chat-messages" class="overflow-y-auto mb-4 space-y-4 flex-1 min-h-[300px] max-h-[350px]">
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 gradient-primary rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="material-icons text-white text-sm">smart_toy</span>
+                    </div>
+                    <div class="glass rounded-lg p-3 max-w-xs">
+                        <p class="text-sm text-gray-700">Hi! I'm here to help you create a targeted audience. Tell me about your ideal customers - their demographics, interests, and behaviors.</p>
+                    </div>
                     </div>
                 </div>
                 
-                <div class="mt-6">
-                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
-                        Description
-                    </label>
-                    <textarea id="description" name="description" rows="3"
-                              class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                              placeholder="Describe your target audience..."></textarea>
+            <!-- Chat Input -->
+            <div class="flex space-x-2">
+                <input type="text" id="chat-input" placeholder="Describe your target audience..."
+                       class="flex-1 px-3 py-2 glass border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                <button id="send-message" 
+                        class="gradient-primary hover-glow text-white px-4 py-2 rounded-lg font-medium transition duration-300 glow-shadow">
+                    <span class="material-icons text-sm">send</span>
+                </button>
                 </div>
             </div>
 
-            <!-- Targeting Criteria -->
-            <div>
-                <h2 class="text-lg font-semibold text-gray-900 mb-6">Targeting Criteria</h2>
-                
-                <div class="space-y-6">
-                    <!-- Demographics -->
-                    <div class="border border-gray-200 rounded-lg p-6">
-                        <h3 class="text-md font-medium text-gray-900 mb-4 flex items-center">
-                            <span class="material-icons text-blue-600 mr-2">people</span>
-                            Demographics
-                        </h3>
-                        
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Age Range</label>
-                                <div class="flex space-x-2">
-                                    <input type="number" placeholder="18" min="13" max="65"
-                                           class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <span class="flex items-center text-gray-500">to</span>
-                                    <input type="number" placeholder="65" min="13" max="65"
-                                           class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        <!-- Top Right: Map Area -->
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 gradient-secondary rounded-lg flex items-center justify-center glow-shadow mr-3">
+                        <span class="material-icons text-white text-sm">place</span>
+                    </div>
+                    <h2 class="text-lg font-semibold text-gray-900">Location Targeting</h2>
+                                </div>
+                <button id="add-location" 
+                        class="gradient-secondary hover-glow text-white px-3 py-1 rounded-lg text-sm font-medium transition duration-300 glow-shadow">
+                    <span class="material-icons text-sm mr-1">add_location</span>
+                    Add Location
+                </button>
+                            </div>
+                            
+            <!-- Map Container -->
+            <a href="{{ url_for('main.map') }}" class="flex-1 bg-gray-100 rounded-lg relative overflow-hidden cursor-pointer hover:bg-gray-200 transition-colors duration-200 block">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center">
+                        <div class="w-16 h-16 gradient-secondary rounded-full flex items-center justify-center mx-auto mb-4 glow-shadow">
+                            <span class="material-icons text-white text-2xl">place</span>
+                        </div>
+                        <p class="text-gray-600 text-sm">Click to open location targeting map</p>
+                        <p class="text-gray-500 text-xs mt-1">Select locations for your audience</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Location List -->
+            <div id="location-list" class="mt-4 space-y-2 max-h-20 overflow-y-auto">
+                <!-- Location items will be added here dynamically -->
                                 </div>
                             </div>
                             
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
-                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">All genders</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
-                                </select>
+        <!-- Bottom Left: File Upload Area -->
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 flex flex-col">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 gradient-accent rounded-lg flex items-center justify-center glow-shadow mr-3">
+                    <span class="material-icons text-white text-sm">cloud_upload</span>
+                </div>
+                <h2 class="text-lg font-semibold text-gray-900">Upload Data</h2>
                             </div>
                             
-                            <div class="sm:col-span-2 lg:col-span-1">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                                <input type="text" placeholder="e.g., United States, New York"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <!-- Upload Zone -->
+            <div id="upload-zone" class="flex-1 border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center text-center hover:border-blue-400 transition-colors duration-200 cursor-pointer">
+                <div class="w-16 h-16 gradient-accent rounded-full flex items-center justify-center mx-auto mb-4 glow-shadow">
+                    <span class="material-icons text-white text-2xl">cloud_upload</span>
+                                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Upload Your Data</h3>
+                <p class="text-gray-600 text-sm mb-4">Drag and drop files here or click to browse</p>
+                <p class="text-gray-500 text-xs">Supports CSV, Excel, and JSON files</p>
+                <input type="file" id="file-input" multiple accept=".csv,.xlsx,.xls,.json" class="hidden">
                             </div>
+            
+            <!-- Uploaded Files List -->
+            <div id="uploaded-files" class="mt-4 space-y-2 max-h-20 overflow-y-auto">
+                <!-- Uploaded files will be listed here -->
                         </div>
                     </div>
 
-                    <!-- Interests -->
-                    <div class="border border-gray-200 rounded-lg p-6">
-                        <h3 class="text-md font-medium text-gray-900 mb-4 flex items-center">
-                            <span class="material-icons text-green-600 mr-2">favorite</span>
-                            Interests & Behaviors
-                        </h3>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Interests</label>
-                                <div class="flex flex-wrap gap-2">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
-                                        Technology
-                                        <button type="button" class="ml-1 text-blue-600 hover:text-blue-800">
-                                            <span class="material-icons text-sm">close</span>
-                                        </button>
-                                    </span>
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
-                                        Business
-                                        <button type="button" class="ml-1 text-blue-600 hover:text-blue-800">
-                                            <span class="material-icons text-sm">close</span>
-                                        </button>
-                                    </span>
-                                    <input type="text" placeholder="Add interest..." 
-                                           class="px-3 py-1 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                            </div>
+        <!-- Bottom Right: File Download Area -->
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center glow-shadow mr-3">
+                        <span class="material-icons text-white text-sm">download</span>
+                    </div>
+                    <h2 class="text-lg font-semibold text-gray-900">Export Results</h2>
+                </div>
+            </div>
                             
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Online Behavior</label>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <label class="flex items-center">
-                                        <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                        <span class="ml-2 text-sm text-gray-700">Online shoppers</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                        <span class="ml-2 text-sm text-gray-700">Mobile users</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                        <span class="ml-2 text-sm text-gray-700">Social media active</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                        <span class="ml-2 text-sm text-gray-700">News readers</span>
-                                    </label>
+            <!-- Results Preview -->
+            <div class="flex-1 bg-gray-50 rounded-lg p-4 flex flex-col">
+                <div class="flex-1 flex items-center justify-center">
+                    <div class="text-center">
+                        <div class="w-16 h-16 gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 glow-shadow">
+                            <span class="material-icons text-white text-2xl">analytics</span>
                                 </div>
-                            </div>
+                        <p class="text-gray-600 text-sm">Audience results will appear here</p>
                         </div>
                     </div>
 
-                    <!-- Advanced Targeting -->
-                    <div class="border border-gray-200 rounded-lg p-6">
-                        <h3 class="text-md font-medium text-gray-900 mb-4 flex items-center">
-                            <span class="material-icons text-purple-600 mr-2">tune</span>
-                            Advanced Targeting
-                        </h3>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label for="criteria" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Custom Criteria
-                                </label>
-                                <textarea id="criteria" name="criteria" rows="4"
-                                          class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                          placeholder="Enter custom targeting criteria in JSON format or describe your targeting logic..."></textarea>
-                                <p class="text-xs text-gray-500 mt-1">Use this field for advanced targeting options not covered above.</p>
+                <!-- Download Options -->
+                <div id="download-options" class="space-y-2">
+                    <div class="flex items-center justify-between p-3 glass rounded-lg">
+                        <div class="flex items-center">
+                            <span class="material-icons text-green-600 text-sm mr-2">check_circle</span>
+                            <span class="text-sm text-gray-700">Audience Generated</span>
                             </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Estimated Audience Size</label>
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-2xl font-bold text-blue-600">~150K</span>
-                                    <span class="text-sm text-gray-500">users</span>
+                        <span class="text-xs text-gray-500">1,247 contacts</span>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1">This is an estimate based on your current criteria.</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="gradient-primary hover-glow text-white px-3 py-2 rounded-lg text-sm font-medium transition duration-300 glow-shadow">
+                            <span class="material-icons text-sm mr-1">download</span>
+                            CSV
+                        </button>
+                        <button class="gradient-secondary hover-glow text-white px-3 py-2 rounded-lg text-sm font-medium transition duration-300 glow-shadow">
+                            <span class="material-icons text-sm mr-1">download</span>
+                            Excel
+                        </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Settings -->
-            <div>
-                <h2 class="text-lg font-semibold text-gray-900 mb-6">Settings</h2>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                        <select name="status"
-                                class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="draft">Draft</option>
-                            <option value="active">Active</option>
-                            <option value="paused">Paused</option>
-                        </select>
+    <!-- Progress Bar -->
+    <div id="progress-container" class="hidden">
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-medium text-gray-700">Generating Audience...</span>
+                <span id="progress-percentage" class="text-sm text-gray-500">0%</span>
                     </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Privacy</label>
-                        <select class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="private">Private (Only you)</option>
-                            <option value="team">Team (Shared with team)</option>
-                            <option value="public">Public (Available to all)</option>
-                        </select>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div id="progress-bar" class="gradient-primary h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Actions -->
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-6 border-t border-gray-200 space-y-4 sm:space-y-0">
-                <a href="{{ url_for('audiences.audiences') }}" 
-                   class="text-gray-600 hover:text-gray-800 font-medium text-center sm:text-left">
-                    Cancel
-                </a>
-                
-                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-                    <button type="button" 
-                            class="px-4 sm:px-6 py-2 sm:py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition duration-200">
-                        Save as Draft
-                    </button>
-                    <button type="submit" 
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition duration-200">
-                        Create Audience
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
+    <!-- Bottom Spacing -->
+    <div class="h-8"></div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check for saved locations from map page
+    const savedLocations = sessionStorage.getItem('selectedLocations');
+    if (savedLocations) {
+        const locations = JSON.parse(savedLocations);
+        displaySavedLocations(locations);
+        sessionStorage.removeItem('selectedLocations'); // Clear after displaying
+    }
+    
+    function displaySavedLocations(locations) {
+        const locationList = document.getElementById('location-list');
+        if (locations.length === 0) return;
+        
+        locationList.innerHTML = '';
+        locations.forEach((location, index) => {
+            const locationItem = document.createElement('div');
+            locationItem.className = 'flex items-center justify-between p-2 glass rounded-lg';
+            locationItem.innerHTML = `
+                <div class="flex items-center">
+                    <span class="material-icons text-green-600 text-sm mr-2">place</span>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">${location.name}</p>
+                        <p class="text-xs text-gray-500">${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}</p>
+                </div>
+            </div>
+                <button onclick="removeSavedLocation(${index})" class="text-red-500 hover:text-red-700">
+                    <span class="material-icons text-sm">close</span>
+                </button>
+            `;
+            locationList.appendChild(locationItem);
+        });
+    }
+    
+    // Make remove function globally available
+    window.removeSavedLocation = function(index) {
+        const locationList = document.getElementById('location-list');
+        locationList.children[index].remove();
+    };
+    
+    // Chat functionality
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-message');
+    
+    function addMessage(content, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `flex items-start space-x-3 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
+        
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = `w-8 h-8 ${isUser ? 'gradient-accent' : 'gradient-primary'} rounded-full flex items-center justify-center flex-shrink-0`;
+        
+        const icon = document.createElement('span');
+        icon.className = 'material-icons text-white text-sm';
+        icon.textContent = isUser ? 'person' : 'smart_toy';
+        avatarDiv.appendChild(icon);
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'glass rounded-lg p-3 max-w-xs';
+        messageContent.innerHTML = `<p class="text-sm text-gray-700">${content}</p>`;
+        
+        messageDiv.appendChild(avatarDiv);
+        messageDiv.appendChild(messageContent);
+        chatMessages.appendChild(messageDiv);
+        
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    function sendMessage() {
+        const message = chatInput.value.trim();
+        if (message) {
+            addMessage(message, true);
+            chatInput.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                addMessage("Thanks for that information! Can you tell me more about their age range and interests?");
+            }, 1000);
+        }
+    }
+    
+    sendButton.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+    
+    // File upload functionality
+    const uploadZone = document.getElementById('upload-zone');
+    const fileInput = document.getElementById('file-input');
+    const uploadedFiles = document.getElementById('uploaded-files');
+    
+    uploadZone.addEventListener('click', () => fileInput.click());
+    uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.classList.add('border-blue-400', 'bg-blue-50');
+    });
+    uploadZone.addEventListener('dragleave', () => {
+        uploadZone.classList.remove('border-blue-400', 'bg-blue-50');
+    });
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.classList.remove('border-blue-400', 'bg-blue-50');
+        handleFiles(e.dataTransfer.files);
+    });
+    
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+    });
+    
+    function handleFiles(files) {
+        Array.from(files).forEach(file => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'flex items-center justify-between p-2 glass rounded-lg';
+            fileItem.innerHTML = `
+                <div class="flex items-center">
+                    <span class="material-icons text-blue-600 text-sm mr-2">description</span>
+                    <span class="text-sm text-gray-700">${file.name}</span>
+    </div>
+                <span class="text-xs text-gray-500">${(file.size / 1024).toFixed(1)} KB</span>
+            `;
+            uploadedFiles.appendChild(fileItem);
+        });
+    }
+    
+    // Location functionality
+    const addLocationButton = document.getElementById('add-location');
+    const locationList = document.getElementById('location-list');
+    
+    addLocationButton.addEventListener('click', () => {
+        const location = prompt('Enter location name:');
+        if (location) {
+            const locationItem = document.createElement('div');
+            locationItem.className = 'flex items-center justify-between p-2 glass rounded-lg';
+            locationItem.innerHTML = `
+                <div class="flex items-center">
+                    <span class="material-icons text-green-600 text-sm mr-2">place</span>
+                    <span class="text-sm text-gray-700">${location}</span>
+</div>
+                <button class="text-red-500 hover:text-red-700">
+                    <span class="material-icons text-sm">close</span>
+                </button>
+            `;
+            locationList.appendChild(locationItem);
+        }
+    });
+    
+    // Generate audience functionality
+    const generateButton = document.getElementById('generate-audience');
+    const progressContainer = document.getElementById('progress-container');
+    const progressBar = document.getElementById('progress-bar');
+    const progressPercentage = document.getElementById('progress-percentage');
+    const downloadOptions = document.getElementById('download-options');
+    
+    generateButton.addEventListener('click', () => {
+        progressContainer.classList.remove('hidden');
+        generateButton.disabled = true;
+        generateButton.textContent = 'Generating...';
+        
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                progressContainer.classList.add('hidden');
+                downloadOptions.classList.remove('hidden');
+                generateButton.textContent = 'Regenerate';
+                generateButton.disabled = false;
+            }
+            progressBar.style.width = progress + '%';
+            progressPercentage.textContent = Math.round(progress) + '%';
+        }, 200);
+    });
+});
+</script>
 {% endblock %}

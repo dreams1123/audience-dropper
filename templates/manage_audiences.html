@@ -11,7 +11,7 @@
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Manage Audiences</h1>
                 <p class="text-gray-600 mt-1">Edit, duplicate, and manage your target audiences.</p>
             </div>
-            <a href="{{ url_for('audiences.create_audience_step1') }}" 
+            <a href="{{ url_for('audiences.create_audience') }}" 
                class="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition duration-200 flex items-center justify-center sm:justify-start">
                 <span class="material-icons mr-2 text-sm sm:text-base">add</span>
                 <span class="text-sm sm:text-base">Create New</span>
@@ -99,7 +99,7 @@
                         <td class="px-3 sm:px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                    <span class="material-icons text-blue-600 text-xs sm:text-sm">group</span>
+                                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Audience Dropper Logo" class="w-6 h-6 sm:w-8 sm:h-8">
                                 </div>
                                 <div class="ml-2 sm:ml-4">
                                     <div class="text-sm font-medium text-gray-900">{{ audience.name }}</div>
@@ -166,11 +166,11 @@
                     <tr>
                         <td colspan="8" class="px-6 py-12 text-center">
                             <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <span class="material-icons text-gray-400 text-2xl">group</span>
+                                <img src="{{ url_for('static', filename='logo.png') }}" alt="Audience Dropper Logo" class="w-12 h-12">
                             </div>
                             <h3 class="text-lg font-medium text-gray-900 mb-2">No audiences found</h3>
                             <p class="text-gray-600 mb-6">Create your first audience to get started.</p>
-                            <a href="{{ url_for('audiences.create_audience_step1') }}" 
+                            <a href="{{ url_for('audiences.create_audience') }}" 
                                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200 inline-flex items-center">
                                 <span class="material-icons mr-2">add</span>
                                 Create Audience

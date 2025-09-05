@@ -327,8 +327,8 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <a href="{{ url_for('main.index') }}" class="flex items-center space-x-2">
-                        <div class="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center glow-shadow pulse-slow">
-                            <span class="material-icons text-white text-sm">group</span>
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center glow-shadow pulse-slow">
+                            <img src="{{ url_for('static', filename='logo.png') }}" alt="Audience Dropper Logo" class="w-8 h-8">
                         </div>
                         <span class="text-lg sm:text-xl font-semibold text-gray-900">Audience Dropper</span>
                     </a>
@@ -339,8 +339,16 @@
                     {% if current_user.is_authenticated %}
                         <a href="{{ url_for('main.dashboard') }}" 
                            class="{% if request.endpoint == 'main.dashboard' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} px-3 py-2 rounded-md text-sm font-medium transition duration-300">Dashboard</a>
-                        <a href="{{ url_for('audiences.audiences') }}" 
-                           class="{% if request.endpoint and (request.endpoint.startswith('audiences.') or request.endpoint == 'audiences.audiences') %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} px-3 py-2 rounded-md text-sm font-medium transition duration-300">Audiences</a>
+                        <a href="{{ url_for('audiences.create_audience') }}" 
+                           class="{% if request.endpoint == 'audiences.create_audience' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} px-3 py-2 rounded-md text-sm font-medium transition duration-300">Create Audience</a>
+                        <a href="{{ url_for('audiences.manage_audiences') }}" 
+                           class="{% if request.endpoint == 'audiences.manage_audiences' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} px-3 py-2 rounded-md text-sm font-medium transition duration-300">Manage Audiences</a>
+                        <a href="{{ url_for('main.support') }}" 
+                           class="{% if request.endpoint == 'main.support' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} px-3 py-2 rounded-md text-sm font-medium transition duration-300">Support</a>
+                        <a href="{{ url_for('main.faq') }}" 
+                           class="{% if request.endpoint == 'main.faq' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} px-3 py-2 rounded-md text-sm font-medium transition duration-300">FAQ</a>
+                        <a href="{{ url_for('main.instructions') }}" 
+                           class="{% if request.endpoint == 'main.instructions' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} px-3 py-2 rounded-md text-sm font-medium transition duration-300">Instructions</a>
                         <div class="relative group" id="user-dropdown">
                             <button class="flex items-center space-x-1 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium focus:outline-none">
                                 <span class="material-icons text-sm">account_circle</span>
@@ -374,8 +382,16 @@
                     {% if current_user.is_authenticated %}
                         <a href="{{ url_for('main.dashboard') }}" 
                            class="{% if request.endpoint == 'main.dashboard' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} block px-3 py-2 rounded-md text-base font-medium transition duration-300">Dashboard</a>
-                        <a href="{{ url_for('audiences.audiences') }}" 
-                           class="{% if request.endpoint and (request.endpoint.startswith('audiences.') or request.endpoint == 'audiences.audiences') %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} block px-3 py-2 rounded-md text-base font-medium transition duration-300">Audiences</a>
+                        <a href="{{ url_for('audiences.create_audience') }}" 
+                           class="{% if request.endpoint == 'audiences.create_audience' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} block px-3 py-2 rounded-md text-base font-medium transition duration-300">Create Audience</a>
+                        <a href="{{ url_for('audiences.manage_audiences') }}" 
+                           class="{% if request.endpoint == 'audiences.manage_audiences' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} block px-3 py-2 rounded-md text-base font-medium transition duration-300">Manage Audiences</a>
+                        <a href="{{ url_for('main.support') }}" 
+                           class="{% if request.endpoint == 'main.support' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} block px-3 py-2 rounded-md text-base font-medium transition duration-300">Support</a>
+                        <a href="{{ url_for('main.faq') }}" 
+                           class="{% if request.endpoint == 'main.faq' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} block px-3 py-2 rounded-md text-base font-medium transition duration-300">FAQ</a>
+                        <a href="{{ url_for('main.instructions') }}" 
+                           class="{% if request.endpoint == 'main.instructions' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} block px-3 py-2 rounded-md text-base font-medium transition duration-300">Instructions</a>
                         <a href="{{ url_for('main.profile') }}" 
                            class="{% if request.endpoint == 'main.profile' %}nav-link-active{% else %}text-gray-700 hover:text-blue-600{% endif %} block px-3 py-2 rounded-md text-base font-medium transition duration-300">Profile</a>
                         <a href="{{ url_for('main.account') }}" 
@@ -421,8 +437,60 @@
     <!-- Footer -->
     <footer class="glass backdrop-blur-lg border-t border-white/20 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="text-center text-gray-500 text-sm">
-                <p>&copy; 2024 Audience Dropper. Created by Luis Fernando.</p>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand Section -->
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center glow-shadow">
+                            <img src="{{ url_for('static', filename='logo.png') }}" alt="Audience Dropper Logo" class="w-8 h-8">
+                        </div>
+                        <span class="text-lg font-semibold text-gray-900">Audience Dropper</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">AI-powered audience targeting platform that helps you create highly targeted audiences for your marketing campaigns.</p>
+                    <p class="text-gray-500 text-xs">&copy; 2024 Audience Dropper.</p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{{ url_for('main.dashboard') }}" class="text-gray-600 hover:text-blue-600 text-sm transition duration-200">Dashboard</a></li>
+                        <li><a href="{{ url_for('audiences.create_audience') }}" class="text-gray-600 hover:text-blue-600 text-sm transition duration-200">Create Audience</a></li>
+                        <li><a href="{{ url_for('audiences.manage_audiences') }}" class="text-gray-600 hover:text-blue-600 text-sm transition duration-200">Manage Audiences</a></li>
+                        <li><a href="{{ url_for('main.profile') }}" class="text-gray-600 hover:text-blue-600 text-sm transition duration-200">Profile</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Support -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 mb-4">Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{{ url_for('main.support') }}" class="text-gray-600 hover:text-blue-600 text-sm transition duration-200">Support Center</a></li>
+                        <li><a href="{{ url_for('main.faq') }}" class="text-gray-600 hover:text-blue-600 text-sm transition duration-200">FAQ</a></li>
+                        <li><a href="{{ url_for('main.instructions') }}" class="text-gray-600 hover:text-blue-600 text-sm transition duration-200">Instructions</a></li>
+                        <li><a href="{{ url_for('main.account') }}" class="text-gray-600 hover:text-blue-600 text-sm transition duration-200">Account</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Bottom Border -->
+            <div class="border-t border-white/20 mt-8 pt-6">
+                <div class="flex flex-col sm:flex-row justify-between items-center">
+                    <div class="flex space-x-6 mb-4 sm:mb-0">
+                        <a href="#" class="text-gray-400 hover:text-blue-600 transition duration-200">
+                            <span class="material-icons text-sm">privacy_tip</span>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-blue-600 transition duration-200">
+                            <span class="material-icons text-sm">description</span>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-blue-600 transition duration-200">
+                            <span class="material-icons text-sm">security</span>
+                        </a>
+                    </div>
+                    <div class="text-gray-500 text-xs">
+                        <p>Built with ❤️ for better audience targeting</p>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
@@ -468,3 +536,6 @@
     </script>
 </body>
 </html>
+
+
+

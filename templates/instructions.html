@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}Instructions - Audience Dropper{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Instructions & Guide</h1>
+                <p class="text-gray-600 mt-1">Learn how to use Audience Dropper effectively.</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center glow-shadow">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Audience Dropper Logo" class="w-12 h-12">
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Start Guide -->
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+            <span class="material-icons mr-2 text-blue-600">rocket_launch</span>
+            Quick Start Guide
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <div class="w-16 h-16 gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 glow-shadow">
+                    <span class="material-icons text-white text-2xl">chat</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">1. Chat with AI</h3>
+                <p class="text-gray-600 text-sm">Start a conversation with our AI to define your target audience through natural language.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 gradient-secondary rounded-full flex items-center justify-center mx-auto mb-4 glow-shadow">
+                    <span class="material-icons text-white text-2xl">search</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">2. AI Generates Keywords</h3>
+                <p class="text-gray-600 text-sm">Our AI analyzes your conversation and generates targeted keywords for audience search.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 gradient-accent rounded-full flex items-center justify-center mx-auto mb-4 glow-shadow">
+                    <span class="material-icons text-white text-2xl">download</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">3. Export Results</h3>
+                <p class="text-gray-600 text-sm">Download your audience data as CSV for use in your marketing campaigns.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Instructions -->
+    <div class="space-y-6">
+        <h2 class="text-xl font-bold text-gray-900">Detailed Instructions</h2>
+        
+        <!-- Step 1: Creating an Audience -->
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <span class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">1</span>
+                Creating Your First Audience
+            </h3>
+            
+            <div class="space-y-4">
+                <div class="flex items-start space-x-3">
+                    <span class="material-icons text-blue-600 mt-1">arrow_forward</span>
+                    <div>
+                        <p class="font-medium text-gray-900">Click "Create Audience"</p>
+                        <p class="text-gray-600 text-sm">Navigate to the Create Audience page from the main navigation.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-3">
+                    <span class="material-icons text-blue-600 mt-1">arrow_forward</span>
+                    <div>
+                        <p class="font-medium text-gray-900">Start the AI Conversation</p>
+                        <p class="text-gray-600 text-sm">Begin chatting with our AI assistant. Be specific about your target audience demographics, interests, and behaviors.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-3">
+                    <span class="material-icons text-blue-600 mt-1">arrow_forward</span>
+                    <div>
+                        <p class="font-medium text-gray-900">Answer AI Questions</p>
+                        <p class="text-gray-600 text-sm">The AI will ask follow-up questions to better understand your audience. Provide detailed answers for better results.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-3">
+                    <span class="material-icons text-blue-600 mt-1">arrow_forward</span>
+                    <div>
+                        <p class="font-medium text-gray-900">Review Generated Keywords</p>
+                        <p class="text-gray-600 text-sm">Once the conversation is complete, review the AI-generated keywords and summary before proceeding.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Managing Audiences -->
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <span class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">2</span>
+                Managing Your Audiences
+            </h3>
+            
+            <div class="space-y-4">
+                <div class="flex items-start space-x-3">
+                    <span class="material-icons text-green-600 mt-1">arrow_forward</span>
+                    <div>
+                        <p class="font-medium text-gray-900">View All Audiences</p>
+                        <p class="text-gray-600 text-sm">Access the Manage Audiences page to see all your created audiences and their status.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-3">
+                    <span class="material-icons text-green-600 mt-1">arrow_forward</span>
+                    <div>
+                        <p class="font-medium text-gray-900">Monitor Search Progress</p>
+                        <p class="text-gray-600 text-sm">Track the progress of your audience searches in real-time. Large searches may take several minutes.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-3">
+                    <span class="material-icons text-green-600 mt-1">arrow_forward</span>
+                    <div>
+                        <p class="font-medium text-gray-900">View Audience Details</p>
+                        <p class="text-gray-600 text-sm">Click on any audience to view detailed information, conversation history, and search results.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Exporting Data -->
+        <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <span class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">3</span>
+                Exporting Your Audience Data
+            </h3>
+            
+            <div class="space-y-4">
+                <div class="flex items-start space-x-3">
+                    <span class="material-icons text-purple-600 mt-1">arrow_forward</span>
+                    <div>
+                        <p class="font-medium text-gray-900">Wait for Search Completion</p>
+                        <p class="text-gray-600 text-sm">Ensure your audience search has completed successfully before attempting to export data.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-3">
+                    <span class="material-icons text-purple-600 mt-1">arrow_forward</span>
+                    <div>
+                        <p class="font-medium text-gray-900">Download CSV File</p>
+                        <p class="text-gray-600 text-sm">Click the download button in the audience details page to get your audience data as a CSV file.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-3">
+                    <span class="material-icons text-purple-600 mt-1">arrow_forward</span>
+                    <div>
+                        <p class="font-medium text-gray-900">Use in Marketing Campaigns</p>
+                        <p class="text-gray-600 text-sm">Import the CSV file into your preferred marketing platform or CRM system.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+            <span class="material-icons mr-2 text-orange-600">star</span>
+            Best Practices
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <h3 class="font-semibold text-gray-900">For Better Results:</h3>
+                <ul class="space-y-2 text-gray-600">
+                    <li class="flex items-start space-x-2">
+                        <span class="material-icons text-green-600 text-sm mt-0.5">check_circle</span>
+                        <span class="text-sm">Be specific about demographics (age, location, income)</span>
+                    </li>
+                    <li class="flex items-start space-x-2">
+                        <span class="material-icons text-green-600 text-sm mt-0.5">check_circle</span>
+                        <span class="text-sm">Describe interests and hobbies in detail</span>
+                    </li>
+                    <li class="flex items-start space-x-2">
+                        <span class="material-icons text-green-600 text-sm mt-0.5">check_circle</span>
+                        <span class="text-sm">Mention purchasing behaviors and preferences</span>
+                    </li>
+                    <li class="flex items-start space-x-2">
+                        <span class="material-icons text-green-600 text-sm mt-0.5">check_circle</span>
+                        <span class="text-sm">Include industry or job-related information</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="space-y-4">
+                <h3 class="font-semibold text-gray-900">Common Mistakes to Avoid:</h3>
+                <ul class="space-y-2 text-gray-600">
+                    <li class="flex items-start space-x-2">
+                        <span class="material-icons text-red-600 text-sm mt-0.5">cancel</span>
+                        <span class="text-sm">Being too vague or generic</span>
+                    </li>
+                    <li class="flex items-start space-x-2">
+                        <span class="material-icons text-red-600 text-sm mt-0.5">cancel</span>
+                        <span class="text-sm">Not providing enough context</span>
+                    </li>
+                    <li class="flex items-start space-x-2">
+                        <span class="material-icons text-red-600 text-sm mt-0.5">cancel</span>
+                        <span class="text-sm">Rushing through the AI conversation</span>
+                    </li>
+                    <li class="flex items-start space-x-2">
+                        <span class="material-icons text-red-600 text-sm mt-0.5">cancel</span>
+                        <span class="text-sm">Ignoring the generated keywords</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Need More Help? -->
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 text-center">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Need More Help?</h2>
+        <p class="text-gray-600 mb-6">If you need additional assistance, check out our FAQ or contact our support team.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('main.faq') }}" 
+               class="gradient-primary hover-glow text-white px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow inline-flex items-center">
+                <span class="material-icons mr-2">help</span>
+                View FAQ
+            </a>
+            <a href="{{ url_for('main.support') }}" 
+               class="gradient-secondary hover-glow text-white px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow inline-flex items-center">
+                <span class="material-icons mr-2">support</span>
+                Contact Support
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -11,7 +11,7 @@
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-900">My Audiences</h1>
                 <p class="text-gray-600 mt-1">Manage and monitor your target audiences.</p>
             </div>
-            <a href="{{ url_for('audiences.create_audience_step1') }}" 
+            <a href="{{ url_for('audiences.create_audience') }}" 
                class="gradient-primary hover-glow text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow flex items-center justify-center sm:justify-start">
                 <span class="material-icons mr-2 text-sm sm:text-base">add</span>
                 <span class="text-sm sm:text-base">Create Audience</span>
@@ -23,8 +23,8 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6">
             <div class="flex items-center">
-                <div class="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center glow-shadow">
-                    <span class="material-icons text-white text-lg">group</span>
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center glow-shadow">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Audience Dropper Logo" class="w-8 h-8">
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Total Audiences</p>
@@ -102,6 +102,7 @@
     </div>
 
     <!-- Audiences Grid -->
+    {% if audiences %}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {% for audience in audiences %}
         <div class="glass card-shadow-lg rounded-xl border border-white/20 p-6 hover-lift">
@@ -177,21 +178,22 @@
                 </div>
             </div>
         </div>
-        {% else %}
-        <!-- Empty State -->
-        <div class="col-span-full glass card-shadow-lg rounded-xl border border-white/20 p-12 text-center">
-            <div class="w-16 h-16 glass rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20">
-                <span class="material-icons text-gray-600 text-2xl">group</span>
-            </div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">No audiences yet</h3>
-            <p class="text-gray-600 mb-6">Create your first audience to get started with targeted campaigns.</p>
-            <a href="{{ url_for('audiences.create_audience_step1') }}" 
-               class="gradient-primary hover-glow text-white px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow inline-flex items-center">
-                <span class="material-icons mr-2">add</span>
-                Create Your First Audience
-            </a>
-        </div>
         {% endfor %}
     </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="glass card-shadow-lg rounded-xl border border-white/20 p-12 text-center">
+        <div class="w-16 h-16 glass rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Audience Dropper Logo" class="w-12 h-12">
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No audiences yet</h3>
+        <p class="text-gray-600 mb-6">Create your first audience to get started with targeted campaigns.</p>
+        <a href="{{ url_for('audiences.create_audience') }}" 
+           class="gradient-primary hover-glow text-white px-6 py-3 rounded-lg font-medium transition duration-300 hover-lift glow-shadow inline-flex items-center">
+            <span class="material-icons mr-2">add</span>
+            Create Your First Audience
+        </a>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

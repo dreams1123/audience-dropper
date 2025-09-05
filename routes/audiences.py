@@ -10,6 +10,7 @@ from datetime import datetime
 
 audiences_bp = Blueprint('audiences', __name__)
 
+@audiences_bp.route('/audiences/')
 @audiences_bp.route('/audiences')
 @login_required
 def audiences():
@@ -46,30 +47,11 @@ def audiences():
     
     return render_template('audiences.html', audiences=all_audiences)
 
-@audiences_bp.route('/audiences/create', methods=['GET', 'POST'])
-@login_required
-def create_audience_simple():
-    if request.method == 'POST':
-        name = request.form['name']
-        description = request.form['description']
-        criteria = request.form['criteria']
-        
-        audience_data = {
-            'name': name,
-            'description': description,
-            'criteria': criteria
-        }
-        
-        create_audience(current_user.id, audience_data)
-        flash('Audience created successfully!', 'success')
-        return redirect(url_for('audiences.audiences'))
-    
-    return render_template('create_audience.html')
 
-@audiences_bp.route('/audiences/create/step1', methods=['GET', 'POST'])
-@audiences_bp.route('/audiences/create/step1/<audience_id>', methods=['GET', 'POST'])
+@audiences_bp.route('/audiences/create', methods=['GET', 'POST'])
+@audiences_bp.route('/audiences/create/<audience_id>', methods=['GET', 'POST'])
 @login_required
-def create_audience_step1(audience_id=None):
+def create_audience(audience_id=None):
     """Step 1: Chatbot interaction to gather information and generate keywords"""
     if request.method == 'POST':
         data = request.get_json()
@@ -191,14 +173,14 @@ def create_audience_step1(audience_id=None):
         from utils.audience_helpers import get_audience_conversation
         audience_data = get_audience_conversation(audience_id)
         if audience_data and audience_data.get('user_id') == current_user.id:
-            return render_template('create_audience_step1.html', 
+            return render_template('create_audience.html', 
                                  audience_id=audience_id,
                                  audience_data=audience_data)
         else:
             flash('Audience not found or access denied', 'error')
             return redirect(url_for('audiences.audiences'))
     
-    return render_template('create_audience_step1.html', audience_id=audience_id)
+    return render_template('create_audience.html', audience_id=audience_id)
 
 @audiences_bp.route('/audiences/save-conversation', methods=['POST'])
 @login_required
@@ -290,206 +272,8 @@ def audience_details(audience_id):
 
 
 
-@audiences_bp.route('/audiences/create/step2', methods=['GET', 'POST'])
-@audiences_bp.route('/audiences/create/step2/<audience_id>', methods=['GET', 'POST'])
-@login_required
-def create_audience_step2(audience_id=None):
-    """Step 2: Generate phrases based on keywords"""
-    if request.method == 'POST':
-        data = request.get_json()
-        keywords = data.get('keywords', [])
-        
-        # Get audience_id from URL parameter or session
-        if not audience_id:
-            audience_id = session.get('audience_creation', {}).get('audience_id')
-        
-        if audience_id:
-            # Update the database with phrases
-            from utils.audience_helpers import update_audience_conversation
-            phrases = generate_phrases_from_keywords(keywords)
-            
-            update_data = {
-                'phrases': phrases,
-                'step2_completed': True,
-                'step2_completed_at': datetime.utcnow()
-            }
-            update_audience_conversation(audience_id, update_data)
-            
-            return jsonify({'phrases': phrases})
-        else:
-            # Fallback to session storage
-            if 'audience_creation' not in session:
-                session['audience_creation'] = {}
-            session['audience_creation']['keywords'] = keywords
-            
-            phrases = generate_phrases_from_keywords(keywords)
-            return jsonify({'phrases': phrases})
-    
-    # Get data from database or session
-    if not audience_id:
-        audience_id = session.get('audience_creation', {}).get('audience_id')
-    
-    # Debug logging (can be removed in production)
-    print(f"Step 2 Debug - Session data: {session.get('audience_creation', {})}")
-    print(f"Step 2 Debug - Audience ID: {audience_id}")
-    
-    if audience_id:
-        # Get data from database
-        from utils.audience_helpers import get_audience_conversation
-        audience_data = get_audience_conversation(audience_id)
-        
-        print(f"Step 2 Debug - Audience data from DB: {audience_data}")
-        
-        if audience_data and audience_data.get('keywords'):
-            keywords = audience_data.get('keywords', [])
-            summary = audience_data.get('summary', '')
-            phrases = audience_data.get('phrases', [])
-            print(f"Step 2 Debug - Keywords from DB: {keywords}")
-            print(f"Step 2 Debug - Existing phrases: {phrases}")
-            return render_template('create_audience_step2.html', 
-                                keywords=keywords, 
-                                summary=summary,
-                                phrases=phrases,
-                                audience_data=audience_data,
-                                audience_id=audience_id)
-    
-    # Fallback to session data
-    keywords = session.get('audience_creation', {}).get('keywords', [])
-    summary = session.get('audience_creation', {}).get('summary', '')
-    phrases = session.get('audience_creation', {}).get('phrases', [])
-    print(f"Step 2 Debug - Keywords from session: {keywords}")
-    print(f"Step 2 Debug - Phrases from session: {phrases}")
-    return render_template('create_audience_step2.html', keywords=keywords, summary=summary, phrases=phrases, audience_id=audience_id)
 
-@audiences_bp.route('/audiences/create/step3', methods=['GET', 'POST'])
-@audiences_bp.route('/audiences/create/step3/<audience_id>', methods=['GET', 'POST'])
-@login_required
-def create_audience_step3(audience_id=None):
-    """Step 3: Search social platforms and analyze content"""
-    if request.method == 'POST':
-        data = request.get_json()
-        keywords = data.get('keywords', [])
-        phrases = data.get('phrases', [])
-        
-        # Get audience_id from URL parameter or session
-        if not audience_id:
-            audience_id = session.get('audience_creation', {}).get('audience_id')
-        
-        # Save phrases to session and database
-        if 'audience_creation' not in session:
-            session['audience_creation'] = {}
-        session['audience_creation']['phrases'] = phrases
-        
-        # Update database if audience_id exists
-        if audience_id:
-            from utils.audience_helpers import update_audience_conversation
-            update_data = {
-                'phrases': phrases,
-                'step3_completed': True,
-                'step3_completed_at': datetime.utcnow()
-            }
-            update_audience_conversation(audience_id, update_data)
-        
-        # Search social platforms (simulated)
-        search_results = search_social_platforms(keywords, phrases)
-        
-        # Analyze and filter results
-        filtered_results = analyze_and_filter_content(search_results, keywords)
-        
-        return jsonify({
-            'search_results': search_results,
-            'filtered_results': filtered_results
-        })
-    
-    # Get audience_id from URL parameter or session
-    if not audience_id:
-        audience_id = session.get('audience_creation', {}).get('audience_id')
-    
-    # Get data from database or session
-    if audience_id:
-        from utils.audience_helpers import get_audience_conversation
-        audience_data = get_audience_conversation(audience_id)
-        if audience_data and audience_data.get('user_id') == current_user.id:
-            keywords = audience_data.get('keywords', [])
-            phrases = audience_data.get('phrases', [])
-            return render_template('create_audience_step3.html', 
-                                 keywords=keywords, 
-                                 phrases=phrases,
-                                 audience_id=audience_id,
-                                 audience_data=audience_data)
-    
-    # Fallback to session data
-    session_data = session.get('audience_creation', {})
-    keywords = session_data.get('keywords', [])
-    phrases = session_data.get('phrases', [])
-    
-    return render_template('create_audience_step3.html', keywords=keywords, phrases=phrases, audience_id=audience_id)
 
-@audiences_bp.route('/audiences/create/step4', methods=['GET', 'POST'])
-@audiences_bp.route('/audiences/create/step4/<audience_id>', methods=['GET', 'POST'])
-@login_required
-def create_audience_step4(audience_id=None):
-    """Step 4: Get contact information and download CSV"""
-    if request.method == 'POST':
-        data = request.get_json()
-        filtered_results = data.get('filtered_results', [])
-        
-        # Get contact information (simulated)
-        contact_data = get_contact_information(filtered_results)
-        
-        # Get audience_id from URL parameter or session
-        if not audience_id:
-            audience_id = session.get('audience_creation', {}).get('audience_id')
-        
-        # Save audience data
-        audience_name = session.get('audience_creation', {}).get('audience_name', 'New Audience')
-        
-        if audience_id:
-            # Update existing audience with contact data
-            from utils.audience_helpers import update_audience_conversation
-            update_data = {
-                'contacts': contact_data,
-                'step4_completed': True,
-                'step4_completed_at': datetime.utcnow(),
-                'status': 'completed'
-            }
-            update_audience_conversation(audience_id, update_data)
-            final_audience_id = audience_id
-        else:
-            # Create new audience (fallback)
-            audience_data = {
-                'name': audience_name,
-                'keywords': session.get('audience_creation', {}).get('keywords', []),
-                'phrases': session.get('audience_creation', {}).get('phrases', []),
-                'contacts': contact_data
-            }
-            final_audience_id = create_audience(current_user.id, audience_data).inserted_id
-        
-        # Generate CSV
-        csv_data = generate_csv(contact_data)
-        
-        return jsonify({
-            'audience_id': str(final_audience_id),
-            'csv_data': csv_data,
-            'contact_count': len(contact_data)
-        })
-    
-    # Get audience_id from URL parameter or session
-    if not audience_id:
-        audience_id = session.get('audience_creation', {}).get('audience_id')
-    
-    # Get data from database or session
-    if audience_id:
-        from utils.audience_helpers import get_audience_conversation
-        audience_data = get_audience_conversation(audience_id)
-        if audience_data and audience_data.get('user_id') == current_user.id:
-            return render_template('create_audience_step4.html', 
-                                 audience_data=audience_data,
-                                 audience_id=audience_id)
-    
-    # Fallback to session data
-    session_data = session.get('audience_creation', {})
-    return render_template('create_audience_step4.html', audience_data=session_data, audience_id=audience_id)
 
 @audiences_bp.route('/audiences/create/download/<audience_id>')
 @login_required
@@ -513,3 +297,92 @@ def download_audience_csv(audience_id):
 def manage_audiences():
     user_audiences = get_user_audiences(current_user.id)
     return render_template('manage_audiences.html', audiences=user_audiences)
+
+@audiences_bp.route('/audiences/search/status/<audience_id>')
+@login_required
+def get_search_status(audience_id):
+    """Get current search status for an audience"""
+    from utils.search_engine import search_engine
+    status = search_engine.get_search_status()
+    
+    # Add audience-specific information
+    if audience_id:
+        from models.search_results import get_search_results_by_audience, get_search_stats
+        results = get_search_results_by_audience(audience_id, current_user.id)
+        stats = get_search_stats(audience_id, current_user.id)
+        
+        status['results_count'] = len(results)
+        status['stats'] = stats
+    
+    return jsonify(status)
+
+@audiences_bp.route('/audiences/search/start', methods=['POST'])
+@login_required
+def start_background_search():
+    """Start a background search process"""
+    data = request.get_json()
+    keywords = data.get('keywords', [])
+    phrases = data.get('phrases', [])
+    audience_id = data.get('audience_id')
+    
+    if not audience_id:
+        return jsonify({'error': 'No audience ID provided'}), 400
+    
+    # Start search in background
+    from utils.search_engine import search_engine
+    from models.search_results import save_search_results
+    
+    try:
+        # Start the search process
+        search_results = search_engine.start_search(keywords, phrases, current_user.id, audience_id)
+        
+        # Save results to database
+        if search_results:
+            save_search_results(current_user.id, audience_id, search_results)
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Search completed successfully',
+            'results_count': len(search_results)
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': f'Search failed: {str(e)}'
+        }), 500
+
+@audiences_bp.route('/audiences/search/test-page')
+@login_required
+def test_search_page():
+    """Serve the test search page"""
+    return render_template('test_search.html')
+
+@audiences_bp.route('/audiences/search/test', methods=['POST'])
+@login_required
+def test_search_engine():
+    """Test the search engine without database operations"""
+    try:
+        data = request.get_json()
+        keywords = data.get('keywords', ['test'])
+        phrases = data.get('phrases', ['test phrase'])
+        
+        print(f"Test Search - Keywords: {keywords}, Phrases: {phrases}")
+        
+        # Test search engine only
+        from utils.search_engine import search_engine
+        search_results = search_engine.start_search(keywords, phrases, 'test_user', 'test_audience')
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Test search completed',
+            'results_count': len(search_results),
+            'search_results': search_results
+        })
+        
+    except Exception as e:
+        print(f"Test Search Error: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Test search failed: {str(e)}'
+        }), 500
